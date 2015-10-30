@@ -5,7 +5,12 @@ This requires a configuration file named ".genosqlrc.yaml". This file can be loc
 
 This file must follow the structure:
 
+
+
 username: ***
+
 password: *** (can be empty)
+
 url : *** (can be localhost)
+
 db : ***
