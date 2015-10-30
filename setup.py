@@ -42,8 +42,8 @@ setup(name='genologics_sql',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          "requests",
           "SQLAlchemy",
+          "pyyaml",
           "psycopg2"
       ],
       entry_points="""
