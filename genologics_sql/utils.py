@@ -1,6 +1,10 @@
 import yaml
 import os
+
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from genologics_sql.tables import Base
 
 def get_configuration():
     for fn in [os.path.expanduser('~/.genosqlrc.yaml'), '.genosqlrc.yaml']:
@@ -17,6 +21,12 @@ def get_engine():
         raise Exception("The configuration file seems to be missing a required parameter. Please read the README.md. Missing key : {}".format(e.message))
     return create_engine(uri)
 
+def get_session():
+    engine=get_engine()
+    Base.metadata.bind = engine
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    return session
 
 
 CONF=get_configuration()
