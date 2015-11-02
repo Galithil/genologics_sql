@@ -27,7 +27,7 @@ class Project(Base):
 
 class Sample(Base):
     __tablename__ = 'sample'
-    processid =         Column(Integer, primary_key=True)
+    processid =         Column(Integer, primary_key=True, ForeignKey('process.processid'))
     sampleid =          Column(Integer)    
     name =              Column(String)    
     datereceived =      Column(TIMESTAMP) 
@@ -37,3 +37,35 @@ class Sample(Base):
     bisourceid =        Column(Integer)
     projectid =         Column(Integer, ForeignKey('project.projectid'))
     controltypeid =     Column(Integer)
+    def __repr__(self):
+        return "<Sample(id={}, name={})>".format(self.sampleid, self.name)
+
+
+
+class Process(Base):
+    __tablename__ = 'process'
+    processid =         Column(Integer, primary_key=True)
+    daterun =           Column(TIMESTAMP)    
+    luid =              Column(String)    
+    isprotocol =        Column(Boolean)    
+    protocolnameused =  Column(String)
+    programstarted =    Column(Boolean)
+    datastoreid =       Column(Integer)
+    isglobal =          Column(Boolean)
+    ownerid =           Column(Integer)
+    createddate =       Column(TIMESTAMP)    
+    lastmodifieddate =  Column(TIMESTAMP)    
+    lastmodifiedby =    Column(Integer)
+    installationid =    Column(Integer)
+    techid =            Column(Integer)
+    typeid =            Column(Integer)
+    stringparameterid = Column(Integer)
+    fileparameterid =   Column(Integer)
+    protocolstepid =    Column(Integer)
+    workstatus =        Column(String)
+    reagentcategoryid = Column(Integer)
+    signedbyid =        Column(Integer)
+    signedbydate =      Column(TIMESTAMP)
+    nextstepslocked =   Column(Boolean)
+
+
