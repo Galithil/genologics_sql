@@ -17,6 +17,20 @@ artifact_ancestor_map = Table('artifact_ancestor_map', Base.metadata,
 
 #real tables next
 
+#udf view has to be before project for reasons
+class EntityUdfView(Base):
+    __tablename__ = 'entity_udf_view'
+    attachtoid =        Column(Integer, primary_key=True)     
+    attachtoclassid =   Column(Integer, primary_key=True)
+    udtname =           Column(String, primary_key=True)
+    udfname =           Column(String, primary_key=True) 
+    udftype =           Column(String, primary_key=True)
+    udfvalue =          Column(String, primary_key=True)
+    udfunitlabel =      Column(String, primary_key=True)
+
+
+    def __repr__(self):
+        return "<EntityUdf(id={}, class={}, key={}, value={})>".format(self.attachtoid, self.attachtoclassid, self.udfname, self.udfvalue)
 
 class Project(Base):
     __tablename__ = 'project'
@@ -36,7 +50,9 @@ class Project(Base):
     researcherid =      Column(Integer) 
     priority =          Column(Integer)
 
-    udfs = relationship("EntityUdfView", foreign_keys=projectid, primaryjoin="and_(Project.projectid == EntityUdfView.attachtoid, EntityUdfView.attachtoclassid == 83)")
+    #this is the reason why udfview was declared before project
+    udfs = relationship("EntityUdfView", foreign_keys=projectid, remote_side=EntityUdfView.attachtoid, uselist=True,
+            primaryjoin="and_(Project.projectid==EntityUdfView.attachtoid, EntityUdfView.attachtoclassid==83)")
 
     def __repr__(self):
         return "<Project(id={}, name={})>".format(self.projectid, self.name)
@@ -180,16 +196,3 @@ class ProcessUdfView(Base):
     def __repr__(self):
         return "<ProcessUdf(id={}, key={}, value={})>".format(self.processid, self.udfname, self.udfvalue)
 
-class EntityUdfView(Base):
-    __tablename__ = 'entity_udf_view'
-    attachtoid =        Column(Integer, primary_key=True)     
-    attachtoclassid =   Column(Integer, primary_key=True)
-    udtname =           Column(String, primary_key=True)
-    udfname =           Column(String, primary_key=True) 
-    udftype =           Column(String, primary_key=True)
-    udfvalue =          Column(String, primary_key=True)
-    udfunitlabel =      Column(String, primary_key=True)
-
-
-    def __repr__(self):
-        return "<EntityUdf(id={}, class={}, key={}, value={})>".format(self.attachtoid, self.attachtoclassid, self.udfname, self.udfvalue)
