@@ -170,6 +170,7 @@ class Artifact(Base):
                 primaryjoin=artifactid==artifact_ancestor_map.c.artifactid, 
                 secondaryjoin=artifactid==artifact_ancestor_map.c.ancestorartifactid)
     udfs = relationship("ArtifactUdfView")
+    containerplacement = relationship('ContainerPlacement', uselist=False, backref='artifact')
     def __repr__(self):
         return "<Artifact(id={}, name={})>".format(self.artifactid, self.name)
 
@@ -196,3 +197,48 @@ class ProcessUdfView(Base):
     def __repr__(self):
         return "<ProcessUdf(id={}, key={}, value={})>".format(self.processid, self.udfname, self.udfvalue)
 
+
+class ContainerPlacement(Base):
+    __tablename__ = 'containerplacement'
+    placementid =       Column(Integer, primary_key=True)     
+    containerid =       Column(Integer, ForeignKey('container.containerid'), primary_key=True)
+    wellxposition =     Column(Integer)
+    wellyposition =     Column(Integer)
+    dateplaced =        Column(TIMESTAMP)
+    ownerid =           Column(Integer)
+    datastoreid =       Column(Integer)
+    isglobal =          Column(Boolean)
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby =    Column(Integer)
+    reagentid =         Column(Integer)
+    processartifactid = Column(Integer, ForeignKey('artifact.artifactid'))
+
+    container=relationship('Container', uselist=False)
+
+    def __repr__(self):
+        return "<ContainerPlacement(id={}, pos={}:{}, cont={}, art={})>".format(self.placementid, self.wellxposition, self.wellyposition, self.containerid, self.processartifactid)
+
+
+class Container(Base):
+    __tablename__ = 'container'
+    containerid =       Column(Integer, primary_key=True)     
+    subtype =           Column(String)     
+    luid =              Column(String)     
+    isvisible =         Column(Boolean)     
+    name =              Column(String)     
+    ownerid =           Column(Integer)     
+    datastoreid =       Column(Integer)     
+    isglobal =          Column(Boolean)     
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby =    Column(Integer)
+    stateid =           Column(Integer)     
+    typeid =            Column(Integer)     
+    lotnumber =         Column(String)
+    expirydate =        Column(TIMESTAMP)
+
+
+
+    def __repr__(self):
+        return "<Container(id={}, name={})>".format(self.containerid, self.name)
