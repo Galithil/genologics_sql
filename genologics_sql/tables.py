@@ -1,6 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import Table, ForeignKey, Column, Boolean, Integer, Float, String, TIMESTAMP
+from sqlalchemy import Table, ForeignKey, Column, Boolean, Integer, Float, String, TIMESTAMP, LargeBinary
 
 Base = declarative_base()
 
@@ -15,6 +15,9 @@ artifact_ancestor_map = Table('artifact_ancestor_map', Base.metadata,
                 Column('ancestorartifactid', Integer, ForeignKey('artifact.artifactid')))
 
 
+artifact_label_map = Table('artifact_label_map', Base.metadata, 
+                    Column('artifactid', Integer, ForeignKey('artifact.artifactid')),
+                    Column('labelid', Integer, ForeignKey('reagentlabel.labelid')))
 #real tables next
 
 #udf view has to be before project for reasons
@@ -47,12 +50,14 @@ class Project(Base):
     createddate =       Column(TIMESTAMP)
     lastmodifieddate =  Column(TIMESTAMP)
     lastmodifiedby =    Column(Integer) 
-    researcherid =      Column(Integer) 
+    researcherid =      Column(Integer, ForeignKey('researcher.researcherid')) 
     priority =          Column(Integer)
 
     #this is the reason why udfview was declared before project
     udfs = relationship("EntityUdfView", foreign_keys=projectid, remote_side=EntityUdfView.attachtoid, uselist=True,
             primaryjoin="and_(Project.projectid==EntityUdfView.attachtoid, EntityUdfView.attachtoclassid==83)")
+
+    researcher = relationship("Researcher", uselist=False)
 
     def __repr__(self):
         return "<Project(id={}, name={})>".format(self.projectid, self.name)
@@ -238,7 +243,141 @@ class Container(Base):
     lotnumber =         Column(String)
     expirydate =        Column(TIMESTAMP)
 
-
+    udfs = relationship("EntityUdfView", foreign_keys=projectid, remote_side=EntityUdfView.attachtoid, uselist=True,
+            primaryjoin="and_(Container.containerid==EntityUdfView.attachtoid, EntityUdfView.attachtoclassid==27)")
 
     def __repr__(self):
         return "<Container(id={}, name={})>".format(self.containerid, self.name)
+
+class ReagentLabel(Base):
+    __tablename__ = 'reagentlabel'
+    labelid=            Column(Integer, primary_key=True)     
+    name =              Column(String)     
+    ownerid =           Column(Integer)     
+    datastoreid =       Column(Integer)     
+    isglobal =          Column(Boolean)     
+    createddate =       Column(TIMESTAMP) 
+    lastmodifieddate =  Column(TIMESTAMP) 
+    lastmodifiedby =    Column(Integer) 
+
+    artifacts = relationship("Artifact", secondary = artifact_label_map, 
+                backref='reagentlabels')
+
+    def __repr__(self):
+        return "<ReagentLabel(id={}, name={})>".format(self.labelid, self.name)
+
+
+
+class Analyte(Base):
+    __tablename__ = 'analyte'
+    artifactid =        Column(Integer, primary_key=True, ForeignKey('artifact.artifactid'))     
+    analyteid =         Column(Integer)
+    iscalibrant =       Column(Boolean)
+    sequencenumber =    Column(Integer)
+    isvisible =         Column(Boolean)
+
+    artifact=relationship("Artifact", uselist=False)
+
+    def __repr__(self):
+        return "<Analyte(id={})>".format(self.artifactid)
+
+class ResultFile(Base):
+    __tablename__ = 'resultfile'
+    artifactid =        Column(Integer, primary_key=True, ForeignKey('artifact.artifactid'))     
+    fileid =            Column(Integer)
+    type =              Column(String)
+    parsestatus =       Column(Integer)
+    status =            Column(Integer)
+    commandid =         Column(String)
+    glsfileid =         Column(Integer)
+
+    artifact=relationship("Artifact", uselist=False)
+
+    def __repr__(self):
+        return "<ResultFile(id={})>".format(self.artifactid)
+
+class GlsFile(Base):
+    __tablename__ = 'glsfile'
+    fileid =            Column(Integer, primary_key=True, ForeignKey('resultfile.glsfileid'))
+    server =            Column(String)
+    contenturi =        Column(String)
+    luid =              Column(String)
+    originallocation =  Column(String)
+    type =              Column(String)
+
+    file=relationship("ResultFile",uselist=False, backref="glsfile")
+    
+    def __repr__(self):
+        return "<GlsFile(id={})>".format(self.fileid)
+
+class Researcher(Base):
+    __tablename__ = 'researcher'
+    researcherid =      Column(Integer, primary_key=True)
+    roleid =            Column(Integer)
+    firstname =         Column(String)
+    lastname =          Column(String)
+    title =             Column(String)
+    initials =          Column(String)
+    ownerid =           Column(Integer)
+    datastoreid =       Column(Integer)
+    isglobal =          Column(Integer)
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby =    Column(Integer)
+    phone =             Column(String)
+    email =             Column(String)
+    fax =               Column(String)
+    addressid =         Column(Integer)
+    labid =             Column(Integer) 
+    supervisorid =      Column(Integer) 
+    isapproved =        Column(Boolean) 
+    requestedsupervisorfirstname =  Column(String) 
+    requestedsupervisorlastname =   Column(String) 
+    requestedusername = Column(String) 
+    requestedpassword = Column(String) 
+    requestedlabname =  Column(String) 
+    avatar =            Column(LargeBinary) 
+    avatarcontenttype = Column(String) 
+
+    def __repr__(self):
+        return "<Researcher(id={}, name={} {}, initials={})>".format(self.researcherid, self.firstname, self.lastname, self.initials)
+
+class EscalationEvent(Base):
+    __tablename__ = 'escalationevent'
+    eventid =           Column(Integer, primary_key=True)
+    processid =         Column(Integer, ForeignKey('process.processid'))
+    originatorid =      Column(Integer)
+    reviewerid =        Column(Integer)
+    escalationdate  =   Column(TIMESTAMP)
+    reviewdate  =       Column(TIMESTAMP)
+    escalationcomment = Column(String)
+    reviewcomment =     Column(String)
+    datastoreid =       Column(Integer)
+    isglobal =          Column(Boolean)
+    ownerid =           Column(Integer)
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby  =   Column(Integer)
+
+    process=relationship("Process", uselist=False)
+    def __repr__(self):
+        return "<EscalationEvent(id={}, process={})>".format(self.eventid, self.processid)
+
+
+class EscalatedSample(Base):
+    __tablename__ = 'escalatedsample'
+    escalatedsampleid = Column(Integer, primary_key=True)
+    escalationeventid = Column(Integer, ForeignKey('escalationevent.escalationeventid'))
+    artifactid =        Column(Integer, ForeignKey('artifact.artifactid'))
+    ownerid =           Column(Integer)
+    datastoreid =       Column(Integer)
+    isglobal =          Column(Boolean)
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby  =   Column(Integer)
+
+    event=relationship("EscalationEvent", backref="escalatedsamples")
+    
+
+    def __repr__(self):
+        return "<EscalatedSample(id={}, artifact={})>".format(self.escalatedsampleid, self.artifactid)
