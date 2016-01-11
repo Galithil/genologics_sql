@@ -243,7 +243,7 @@ class Container(Base):
     lotnumber =         Column(String)
     expirydate =        Column(TIMESTAMP)
 
-    udfs = relationship("EntityUdfView", foreign_keys=projectid, remote_side=EntityUdfView.attachtoid, uselist=True,
+    udfs = relationship("EntityUdfView", foreign_keys=containerid, remote_side=EntityUdfView.attachtoid, uselist=True,
             primaryjoin="and_(Container.containerid==EntityUdfView.attachtoid, EntityUdfView.attachtoclassid==27)")
 
     def __repr__(self):
@@ -270,7 +270,7 @@ class ReagentLabel(Base):
 
 class Analyte(Base):
     __tablename__ = 'analyte'
-    artifactid =        Column(Integer, primary_key=True, ForeignKey('artifact.artifactid'))     
+    artifactid =        Column(Integer, ForeignKey('artifact.artifactid'), primary_key=True)     
     analyteid =         Column(Integer)
     iscalibrant =       Column(Boolean)
     sequencenumber =    Column(Integer)
@@ -283,7 +283,7 @@ class Analyte(Base):
 
 class ResultFile(Base):
     __tablename__ = 'resultfile'
-    artifactid =        Column(Integer, primary_key=True, ForeignKey('artifact.artifactid'))     
+    artifactid =        Column(Integer, ForeignKey('artifact.artifactid'), primary_key=True)     
     fileid =            Column(Integer)
     type =              Column(String)
     parsestatus =       Column(Integer)
@@ -298,7 +298,7 @@ class ResultFile(Base):
 
 class GlsFile(Base):
     __tablename__ = 'glsfile'
-    fileid =            Column(Integer, primary_key=True, ForeignKey('resultfile.glsfileid'))
+    fileid =            Column(Integer, ForeignKey('resultfile.glsfileid'), primary_key=True)
     server =            Column(String)
     contenturi =        Column(String)
     luid =              Column(String)
@@ -367,7 +367,7 @@ class EscalationEvent(Base):
 class EscalatedSample(Base):
     __tablename__ = 'escalatedsample'
     escalatedsampleid = Column(Integer, primary_key=True)
-    escalationeventid = Column(Integer, ForeignKey('escalationevent.escalationeventid'))
+    escalationeventid = Column(Integer, ForeignKey('escalationevent.eventid'))
     artifactid =        Column(Integer, ForeignKey('artifact.artifactid'))
     ownerid =           Column(Integer)
     datastoreid =       Column(Integer)
