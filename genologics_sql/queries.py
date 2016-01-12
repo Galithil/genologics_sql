@@ -16,7 +16,7 @@ def get_last_modified_project_udfs(session, interval="2 hours"):
     return session.query(Project).from_statement(text(query)).all()
 
 
-def get_last_modified_project_samples_udfs(session, interval="2 hours"):
+def get_last_modified_project_sample_udfs(session, interval="2 hours"):
     #gets the project objects that have sample udfs last modified in the last <interval>
     query= "select distinct pj.* from project pj \
             inner join sample sa on sa.projectid=pj.projectid \
@@ -42,18 +42,64 @@ def get_last_modified_project_artifact_udfs(session, interval="2 hours"):
             where age(aus.lastmodifieddate) < '{int}'::interval;".format(int=interval)
     return session.query(Project).from_statement(text(query)).all()
 
+def get_last_modified_project_containers(session, interval="2 hours"):
+    #gets the project objects that have containers last modified in the last <interval>
+    query= "select distinct pj.* from project pj \
+            inner join sample sa on sa.projectid=pj.projectid \
+            inner join artifact_sample_map asm on sa.processid=asm.processid \
+            inner join containerplacement cpl on asm.artifactid=cpl.processartifactid \
+            inner join container ct on cpl.containerid=ct.containerid \
+            where age(ct.lastmodifieddate) < '{int}'::interval;".format(int=interval)
+    return session.query(Project).from_statement(text(query)).all()
+
+def get_last_modified_project_processes(session, interval="2 hours"):
+    #gets the project objects that have containers last modified in the last <interval>
+    query= "select distinct pj.* from project pj \
+            inner join sample sa on sa.projectid=pj.projectid \
+            inner join artifact_sample_map asm on sa.processid=asm.processid \
+            inner join processiotracker pit on asm.artifactid=pit.inputartifactid \
+            inner join process pro on pit.processid=pro.processid \
+            where age(pro.lastmodifieddate) < '{int}'::interval;".format(int=interval)
+    return session.query(Project).from_statement(text(query)).all()
+
+def get_last_modified_project_process_udfs(session, interval="2 hours"):
+    #gets the project objects that have containers last modified in the last <interval>
+    query= "select distinct pj.* from project pj \
+            inner join sample sa on sa.projectid=pj.projectid \
+            inner join artifact_sample_map asm on sa.processid=asm.processid \
+            inner join processiotracker pit on asm.artifactid=pit.inputartifactid \
+            inner join process pro on pit.processid=pro.processid \
+            inner join processudfstorage pus on pro.processid=pus.processid \
+            where age(pus.lastmodifieddate) < '{int}'::interval;".format(int=interval)
+    return session.query(Project).from_statement(text(query)).all()
+
 
 def get_last_modified_projectids(session, interval="2 hours"):
     #gets all the projectids for which any part has been modified in the last interval
     projectids=set()
     for project in get_last_modified_projects(session, interval):
-        projectids.add(project.projectid)
+        projectids.add(project.luid)
+    print projectids
 
     for project in get_last_modified_project_udfs(session, interval):
-        projectids.add(project.projectid)
+        projectids.add(project.luid)
+    print projectids
 
     for project in get_last_modified_project_sample_udfs(session, interval):
-        projectids.add(project.projectid)
+        projectids.add(project.luid)
+    print projectids
+
+    for project in get_last_modified_project_containers(session, interval):
+        projectids.add(project.luid)
+    print projectids
+
+    for project in get_last_modified_project_processes(session, interval):
+        projectids.add(project.luid)
+    print projectids
+
+    for project in get_last_modified_project_process_udfs(session, interval):
+        projectids.add(project.luid)
+    print projectids
 
     return projectids
 
