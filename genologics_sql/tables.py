@@ -2,10 +2,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Table, ForeignKey, Column, Boolean, Integer, Float, String, TIMESTAMP, LargeBinary
 
+"""Module used to map the tables from Genologics's Postgres instance"""
 Base = declarative_base()
 
-#Junction tables first
 
+"""Junction tables"""
 artifact_sample_map = Table('artifact_sample_map', Base.metadata,
             Column('artifactid', Integer, ForeignKey('artifact.artifactid')),
                 Column('processid', Integer, ForeignKey('sample.processid')))
@@ -18,9 +19,10 @@ artifact_ancestor_map = Table('artifact_ancestor_map', Base.metadata,
 artifact_label_map = Table('artifact_label_map', Base.metadata, 
                     Column('artifactid', Integer, ForeignKey('artifact.artifactid')),
                     Column('labelid', Integer, ForeignKey('reagentlabel.labelid')))
-#real tables next
 
-#udf view has to be before project for reasons
+"""Standard tables"""
+
+#udf view has to be before project 
 class EntityUdfView(Base):
     __tablename__ = 'entity_udf_view'
     attachtoid =        Column(Integer, primary_key=True)     
