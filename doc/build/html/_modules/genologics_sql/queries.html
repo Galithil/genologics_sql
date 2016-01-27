@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>genologics_sql.queries &mdash; genologics-sql 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="genologics-sql 0.0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for genologics_sql.queries</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">genologics_sql.tables</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">text</span>
+
+<div class="viewcode-block" id="get_last_modified_projects"><a class="viewcode-back" href="../../queries.html#genologics_sql.queries.get_last_modified_projects">[docs]</a><span class="k">def</span> <span class="nf">get_last_modified_projects</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s">&quot;2 hours&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;gets the project objects last modified in the last &lt;interval&gt;</span>
+
+<span class="sd">    :query: select * from project where age(lastmodifieddate)&lt; &#39;1 hour&#39;::interval;</span>
+
+<span class="sd">    :param session: the current SQLAlchemy session to the database</span>
+<span class="sd">    :param interval: str Postgres-compliant time string</span>
+<span class="sd">    :returns: List of Project records</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">txt</span><span class="o">=</span><span class="s">&quot;age(lastmodifieddate)&lt; &#39;{int}&#39;::interval&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Project</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">txt</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="get_last_modified_project_udfs"><a class="viewcode-back" href="../../queries.html#genologics_sql.queries.get_last_modified_project_udfs">[docs]</a><span class="k">def</span> <span class="nf">get_last_modified_project_udfs</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s">&quot;2 hours&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;gets the project objects that have a udf last modified in the last &lt;interval&gt;</span>
+
+<span class="sd">    :param session: the current SQLAlchemy session to the database</span>
+<span class="sd">    :param interval: str Postgres-compliant time string</span>
+<span class="sd">    :returns: List of Project records</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span><span class="o">=</span><span class="s">&quot;select pj.* from project pj </span><span class="se">\</span>
+<span class="s">           inner join entityudfstorage eus on pj.projectid = eus.attachtoid </span><span class="se">\</span>
+<span class="s">           where eus.attachtoclassid = 83 and age(eus.lastmodifieddate) &lt; &#39;{int}&#39;::interval;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Project</span><span class="p">)</span><span class="o">.</span><span class="n">from_statement</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="get_last_modified_project_sample_udfs"><a class="viewcode-back" href="../../queries.html#genologics_sql.queries.get_last_modified_project_sample_udfs">[docs]</a><span class="k">def</span> <span class="nf">get_last_modified_project_sample_udfs</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s">&quot;2 hours&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;gets the project objects that have sample udfs last modified in the last &lt;interval&gt;</span>
+
+<span class="sd">    :param session: the current SQLAlchemy session to the database</span>
+<span class="sd">    :param interval: str Postgres-compliant time string</span>
+<span class="sd">    :returns: List of Project records</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span><span class="o">=</span> <span class="s">&quot;select distinct pj.* from project pj </span><span class="se">\</span>
+<span class="s">            inner join sample sa on sa.projectid=pj.projectid </span><span class="se">\</span>
+<span class="s">            inner  join processudfstorage pus on sa.processid=pus.processid </span><span class="se">\</span>
+<span class="s">            where age(pus.lastmodifieddate) &lt; &#39;{int}&#39;::interval;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Project</span><span class="p">)</span><span class="o">.</span><span class="n">from_statement</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="get_last_modified_project_artifacts"><a class="viewcode-back" href="../../queries.html#genologics_sql.queries.get_last_modified_project_artifacts">[docs]</a><span class="k">def</span> <span class="nf">get_last_modified_project_artifacts</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s">&quot;2 hours&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;gets the project objects that have artifacts last modified in the last &lt;interval&gt;</span>
+
+<span class="sd">    :param session: the current SQLAlchemy session to the database</span>
+<span class="sd">    :param interval: str Postgres-compliant time string</span>
+<span class="sd">    :returns: List of Project records</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span><span class="o">=</span> <span class="s">&quot;select distinct pj.* from project pj </span><span class="se">\</span>
+<span class="s">            inner join sample sa on sa.projectid=pj.projectid </span><span class="se">\</span>
+<span class="s">            inner join artifact_sample_map asm on sa.processid=asm.processid </span><span class="se">\</span>
+<span class="s">            inner join artifact art on asm.artifactid=art.artifactid </span><span class="se">\</span>
+<span class="s">            where age(art.lastmodifieddate) &lt; &#39;{int}&#39;::interval;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Project</span><span class="p">)</span><span class="o">.</span><span class="n">from_statement</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="get_last_modified_project_artifact_udfs"><a class="viewcode-back" href="../../queries.html#genologics_sql.queries.get_last_modified_project_artifact_udfs">[docs]</a><span class="k">def</span> <span class="nf">get_last_modified_project_artifact_udfs</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s">&quot;2 hours&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;gets the project objects that have artifact udfs last modified in the last &lt;interval&gt;</span>
+
+<span class="sd">    :param session: the current SQLAlchemy session to the database</span>
+<span class="sd">    :param interval: str Postgres-compliant time string</span>
+<span class="sd">    :returns: List of Project records</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span><span class="o">=</span> <span class="s">&quot;select distinct pj.* from project pj </span><span class="se">\</span>
+<span class="s">            inner join sample sa on sa.projectid=pj.projectid </span><span class="se">\</span>
+<span class="s">            inner join artifact_sample_map asm on sa.processid=asm.processid </span><span class="se">\</span>
+<span class="s">            inner join artifactudfstorage aus on asm.artifactid=aus.artifactid </span><span class="se">\</span>
+<span class="s">            where age(aus.lastmodifieddate) &lt; &#39;{int}&#39;::interval;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Project</span><span class="p">)</span><span class="o">.</span><span class="n">from_statement</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="get_last_modified_project_containers"><a class="viewcode-back" href="../../queries.html#genologics_sql.queries.get_last_modified_project_containers">[docs]</a><span class="k">def</span> <span class="nf">get_last_modified_project_containers</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s">&quot;2 hours&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;gets the project objects that have containers last modified in the last &lt;interval&gt;</span>
+
+<span class="sd">    :param session: the current SQLAlchemy session to the database</span>
+<span class="sd">    :param interval: str Postgres-compliant time string</span>
+<span class="sd">    :returns: List of Project records</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span><span class="o">=</span> <span class="s">&quot;select distinct pj.* from project pj </span><span class="se">\</span>
+<span class="s">            inner join sample sa on sa.projectid=pj.projectid </span><span class="se">\</span>
+<span class="s">            inner join artifact_sample_map asm on sa.processid=asm.processid </span><span class="se">\</span>
+<span class="s">            inner join containerplacement cpl on asm.artifactid=cpl.processartifactid </span><span class="se">\</span>
+<span class="s">            inner join container ct on cpl.containerid=ct.containerid </span><span class="se">\</span>
+<span class="s">            where age(ct.lastmodifieddate) &lt; &#39;{int}&#39;::interval;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Project</span><span class="p">)</span><span class="o">.</span><span class="n">from_statement</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="get_last_modified_project_processes"><a class="viewcode-back" href="../../queries.html#genologics_sql.queries.get_last_modified_project_processes">[docs]</a><span class="k">def</span> <span class="nf">get_last_modified_project_processes</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s">&quot;2 hours&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;gets the project objects that have containers last modified in the last &lt;interval&gt;</span>
+
+<span class="sd">    :param session: the current SQLAlchemy session to the database</span>
+<span class="sd">    :param interval: str Postgres-compliant time string</span>
+<span class="sd">    :returns: List of Project records</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span><span class="o">=</span> <span class="s">&quot;select distinct pj.* from project pj </span><span class="se">\</span>
+<span class="s">            inner join sample sa on sa.projectid=pj.projectid </span><span class="se">\</span>
+<span class="s">            inner join artifact_sample_map asm on sa.processid=asm.processid </span><span class="se">\</span>
+<span class="s">            inner join processiotracker pit on asm.artifactid=pit.inputartifactid </span><span class="se">\</span>
+<span class="s">            inner join process pro on pit.processid=pro.processid </span><span class="se">\</span>
+<span class="s">            where age(pro.lastmodifieddate) &lt; &#39;{int}&#39;::interval;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Project</span><span class="p">)</span><span class="o">.</span><span class="n">from_statement</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="get_last_modified_project_process_udfs"><a class="viewcode-back" href="../../queries.html#genologics_sql.queries.get_last_modified_project_process_udfs">[docs]</a><span class="k">def</span> <span class="nf">get_last_modified_project_process_udfs</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s">&quot;2 hours&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;gets the project objects that have containers last modified in the last &lt;interval&gt;</span>
+
+<span class="sd">    :param session: the current SQLAlchemy session to the database</span>
+<span class="sd">    :param interval: str Postgres-compliant time string</span>
+<span class="sd">    :returns: List of Project records</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span><span class="o">=</span> <span class="s">&quot;select distinct pj.* from project pj </span><span class="se">\</span>
+<span class="s">            inner join sample sa on sa.projectid=pj.projectid </span><span class="se">\</span>
+<span class="s">            inner join artifact_sample_map asm on sa.processid=asm.processid </span><span class="se">\</span>
+<span class="s">            inner join processiotracker pit on asm.artifactid=pit.inputartifactid </span><span class="se">\</span>
+<span class="s">            inner join process pro on pit.processid=pro.processid </span><span class="se">\</span>
+<span class="s">            inner join processudfstorage pus on pro.processid=pus.processid </span><span class="se">\</span>
+<span class="s">            where age(pus.lastmodifieddate) &lt; &#39;{int}&#39;::interval;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Project</span><span class="p">)</span><span class="o">.</span><span class="n">from_statement</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="get_last_modified_projectids"><a class="viewcode-back" href="../../queries.html#genologics_sql.queries.get_last_modified_projectids">[docs]</a><span class="k">def</span> <span class="nf">get_last_modified_projectids</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s">&quot;2 hours&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;gets all the projectids for which any part has been modified in the last interval</span>
+
+<span class="sd">    :param session: the current SQLAlchemy session to the database</span>
+<span class="sd">    :param interval: str Postgres-compliant time string</span>
+<span class="sd">    :returns: List of Project records</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">projectids</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">get_last_modified_projects</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+        <span class="n">projectids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">luid</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">projectids</span>
+
+    <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">get_last_modified_project_udfs</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+        <span class="n">projectids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">luid</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">projectids</span>
+
+    <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">get_last_modified_project_sample_udfs</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+        <span class="n">projectids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">luid</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">projectids</span>
+
+    <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">get_last_modified_project_containers</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+        <span class="n">projectids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">luid</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">projectids</span>
+
+    <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">get_last_modified_project_processes</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+        <span class="n">projectids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">luid</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">projectids</span>
+
+    <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">get_last_modified_project_process_udfs</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+        <span class="n">projectids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">luid</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">projectids</span>
+
+    <span class="k">return</span> <span class="n">projectids</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Denis Moreno.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

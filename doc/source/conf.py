@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # genologics-sql documentation build configuration file, created by
-# sphinx-quickstart on Wed Jan 27 14:56:32 2016.
+# sphinx-quickstart on Wed Jan 27 15:17:17 2016.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -20,6 +20,7 @@ import shlex
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../'))
 
 # -- General configuration ------------------------------------------------
 
@@ -30,7 +31,7 @@ import shlex
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.coverage',
+    'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
 ]
 
