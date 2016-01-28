@@ -13,6 +13,15 @@ except:
     with open(version_py, 'r') as fh:
         version_git = open(version_py).read().strip().split('=')[-1].replace('"','')
 
+try:
+    with open("requirements.txt", "r") as f:
+        install_requires = [x.strip() for x in f.readlines()]
+except IOError:
+        install_requires = [
+          "SQLAlchemy",
+          "pyyaml",
+          "psycopg2"]
+
 
 setup(name='genologics_sql',
       version=version_git,
@@ -41,11 +50,7 @@ setup(name='genologics_sql',
       scripts=glob.glob("scripts/*.py"),
       include_package_data=True,
       zip_safe=False,
-      install_requires=[
-          "SQLAlchemy",
-          "pyyaml",
-          "psycopg2"
-      ],
+      install_requires=install_requires,
       entry_points="""
       # -*- Entry points: -*-
       """,

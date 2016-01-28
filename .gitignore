@@ -1,0 +1,5 @@
+*.pyc
+*.swp
+build/*
+dist/*
+genologics_sql.egg-info/*
