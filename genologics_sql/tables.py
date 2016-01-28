@@ -2,28 +2,46 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Table, ForeignKey, Column, Boolean, Integer, Float, String, TIMESTAMP, LargeBinary
 
-"""Module used to map the tables from Genologics's Postgres instance"""
+#Module used to map the tables from Genologics's Postgres instance
+
 Base = declarative_base()
 
 
-"""Junction tables"""
+#Junction tables
+
 artifact_sample_map = Table('artifact_sample_map', Base.metadata,
             Column('artifactid', Integer, ForeignKey('artifact.artifactid')),
                 Column('processid', Integer, ForeignKey('sample.processid')))
+"""Junction table between artifact and sample"""
 
 artifact_ancestor_map = Table('artifact_ancestor_map', Base.metadata,
             Column('artifactid', Integer, ForeignKey('artifact.artifactid')),
                 Column('ancestorartifactid', Integer, ForeignKey('artifact.artifactid')))
+"""Junction table between artifact and artifact (as an ancestor)"""
 
 
 artifact_label_map = Table('artifact_label_map', Base.metadata, 
                     Column('artifactid', Integer, ForeignKey('artifact.artifactid')),
                     Column('labelid', Integer, ForeignKey('reagentlabel.labelid')))
+"""Junction table between artifact and reagentlabel)"""
 
-"""Standard tables"""
+#Standard tables
 
 #udf view has to be before project 
 class EntityUdfView(Base):
+    """Table used to access project and container udfs
+
+    :arg INTEGER attachtoid: the ID of the entity to attach the row to.
+    :arg INTEGER attachtoclassid: the ID of the class of the entity to attach the row to.
+    :arg STRING udtname: the name of the User Defined Type.
+    :arg STRING udfname: the name of the User Defined Field.
+    :arg STRING udttype: the type of the User Defined Type.
+    :arg STRING udfvalue: the value of the User Defined Field.
+    :arg STRING udfunitlabel: the type of the User Defined Field if preset.
+
+
+    All of these are mapped as primary keys.
+    """
     __tablename__ = 'entity_udf_view'
     attachtoid =        Column(Integer, primary_key=True)     
     attachtoclassid =   Column(Integer, primary_key=True)
@@ -38,6 +56,30 @@ class EntityUdfView(Base):
         return "<EntityUdf(id={}, class={}, key={}, value={})>".format(self.attachtoid, self.attachtoclassid, self.udfname, self.udfvalue)
 
 class Project(Base):
+    """Table stroting project objects
+
+    :arg INTEGER projectid: the _internal_ project ID. **Primary key.** 
+    :arg STRING name: the project name. 
+    :arg TIMESTAMP opendate: the opening date of the project as a timestamp. 
+    :arg TIMESTAMP closedate: the closing date of the project as a timestamp. 
+    :arg TIMESTAMP invoicedate: the invoicing date of the project as a timestamp. 
+    :arg STRING luid: the external project id. 
+    :arg STRING maximumsampleid: the id of the last sample. usually, nb of samples-1, as it's 0 indexed. 
+    :arg INTEGER ownerid: researcherID of the project owner. 
+    :arg INTEGER datastoreid: probably used to map the udfs
+    :arg INTEGER isglobal: *unkown*
+    :arg TIMESTAMP createddate: the creation date of the project as a timestamp. 
+    :arg TIMESTAMP lastmodifieddate: the last modification date of the project as a timestamp. 
+    :arg INTEGER lastmodifiedby: the id of the last modifier of the project. 
+    :arg INTEGER researcherid: the id of the researcher associated to the project. 
+    :arg INTEGER priority: *unknown*
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg UDFS udfs: list of project udf rows for the given projectid
+    :arg RESEARCHER researcher: direct researcher mapping
+
+    """
     __tablename__ = 'project'
     projectid =         Column(Integer, primary_key=True)
     name =              Column(String)    

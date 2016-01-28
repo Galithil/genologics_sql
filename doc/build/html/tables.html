@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tables &mdash; genologics-sql 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="genologics-sql 0.0.1 documentation" href="index.html"/>
+        <link rel="next" title="Queries" href="queries.html"/>
+        <link rel="prev" title="genologics-sql’s documentation" href="index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> genologics-sql</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="queries.html">Queries</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">genologics-sql</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Tables</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/tables.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="tables">
+<h1>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h1>
+<p>This is the main module. It maps the different tables in the Genologics Postgres Database into SQLAlchemy&#8217;s objects, allowing them to be queries in python fashion.</p>
+<span class="target" id="module-genologics_sql.tables"></span><dl class="class">
+<dt id="genologics_sql.tables.EntityUdfView">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">EntityUdfView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#EntityUdfView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.EntityUdfView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table used to access project and container udfs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>attachtoid</strong> (<em>INTEGER</em>) &#8211; the ID of the entity to attach the row to.</li>
+<li><strong>attachtoclassid</strong> (<em>INTEGER</em>) &#8211; the ID of the class of the entity to attach the row to.</li>
+<li><strong>udtname</strong> (<em>STRING</em>) &#8211; the name of the User Defined Type.</li>
+<li><strong>udfname</strong> (<em>STRING</em>) &#8211; the name of the User Defined Field.</li>
+<li><strong>udttype</strong> (<em>STRING</em>) &#8211; the type of the User Defined Type.</li>
+<li><strong>udfvalue</strong> (<em>STRING</em>) &#8211; the value of the User Defined Field.</li>
+<li><strong>udfunitlabel</strong> (<em>STRING</em>) &#8211; the type of the User Defined Field if preset.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>All of these are mapped as primary keys.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.Project">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">Project</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#Project"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.Project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table stroting project objects</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>projectid</strong> (<em>INTEGER</em>) &#8211; the _internal_ project ID. <strong>Primary key.</strong></li>
+<li><strong>name</strong> (<em>STRING</em>) &#8211; the project name.</li>
+<li><strong>opendate</strong> (<em>TIMESTAMP</em>) &#8211; the opening date of the project as a timestamp.</li>
+<li><strong>closedate</strong> (<em>TIMESTAMP</em>) &#8211; the closing date of the project as a timestamp.</li>
+<li><strong>invoicedate</strong> (<em>TIMESTAMP</em>) &#8211; the invoicing date of the project as a timestamp.</li>
+<li><strong>luid</strong> (<em>STRING</em>) &#8211; the external project id.</li>
+<li><strong>maximumsampleid</strong> (<em>STRING</em>) &#8211; the id of the last sample. usually, nb of samples-1, as it&#8217;s 0 indexed.</li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; researcherID of the project owner.</li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; probably used to map the udfs</li>
+<li><strong>isglobal</strong> (<em>INTEGER</em>) &#8211; <em>unkown</em></li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; the creation date of the project as a timestamp.</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; the last modification date of the project as a timestamp.</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; the id of the last modifier of the project.</li>
+<li><strong>researcherid</strong> (<em>INTEGER</em>) &#8211; the id of the researcher associated to the project.</li>
+<li><strong>priority</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>udfs</strong> (<em>UDFS</em>) &#8211; list of project udf rows for the given projectid</li>
+<li><strong>researcher</strong> (<em>RESEARCHER</em>) &#8211; direct researcher mapping</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="data">
+<dt id="genologics_sql.tables.artifact_ancestor_map">
+<code class="descclassname">genologics_sql.tables.</code><code class="descname">artifact_ancestor_map</code><em class="property"> = Table('artifact_ancestor_map', MetaData(bind=None), Column('artifactid', Integer(), ForeignKey('artifact.artifactid'), table=&lt;artifact_ancestor_map&gt;), Column('ancestorartifactid', Integer(), ForeignKey('artifact.artifactid'), table=&lt;artifact_ancestor_map&gt;), schema=None)</em><a class="headerlink" href="#genologics_sql.tables.artifact_ancestor_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Junction table between artifact and artifact (as an ancestor)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="genologics_sql.tables.artifact_label_map">
+<code class="descclassname">genologics_sql.tables.</code><code class="descname">artifact_label_map</code><em class="property"> = Table('artifact_label_map', MetaData(bind=None), Column('artifactid', Integer(), ForeignKey('artifact.artifactid'), table=&lt;artifact_label_map&gt;), Column('labelid', Integer(), ForeignKey('reagentlabel.labelid'), table=&lt;artifact_label_map&gt;), schema=None)</em><a class="headerlink" href="#genologics_sql.tables.artifact_label_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Junction table between artifact and reagentlabel)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="genologics_sql.tables.artifact_sample_map">
+<code class="descclassname">genologics_sql.tables.</code><code class="descname">artifact_sample_map</code><em class="property"> = Table('artifact_sample_map', MetaData(bind=None), Column('artifactid', Integer(), ForeignKey('artifact.artifactid'), table=&lt;artifact_sample_map&gt;), Column('processid', Integer(), ForeignKey('sample.processid'), table=&lt;artifact_sample_map&gt;), schema=None)</em><a class="headerlink" href="#genologics_sql.tables.artifact_sample_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Junction table between artifact and sample</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="queries.html" class="btn btn-neutral float-right" title="Queries">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="genologics-sql’s documentation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Denis Moreno.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

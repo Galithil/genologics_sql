@@ -7,3 +7,4 @@ Most of them aim to get entities based on their latest modification date, especi
 
 .. automodule:: genologics_sql.queries
    :members:
+
