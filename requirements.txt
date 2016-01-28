@@ -1,3 +1,4 @@
 SQLAlchemy
 pyyaml
 psycopg2
+sphinx_rtd_theme
