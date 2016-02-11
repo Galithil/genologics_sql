@@ -108,6 +108,25 @@ class Project(Base):
 
 
 class Sample(Base):
+    """
+    Table mapping the samples
+
+    :arg INTEGER processid: The ID of the process that spawned the sample. Primary key.
+    :arg INTEGER sampleid: Internal sample ID.
+    :arg STRING name: the sample name.
+    :arg TIMESTAMP datereceived: timestamp of the sample import.
+    :arg TIMESTAMP datecompleted: timestamp of the project closure / sample completion.
+    :arg INTEGER maximumanalyteid: *unknown*
+    :arg INTEGER uniqueid: *unknown*. Not unique. 
+    :arg INTEGER bisourceid: *unknown*. 
+    :arg INTEGER projectid:  projet ID associated to the sample.
+    :arg INTEGER controltypeid: *unknown*.
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg Project project: project object associated to the sample through the projectid foreign key.
+
+    """
     __tablename__ = 'sample'
     processid =         Column(Integer, ForeignKey('process.processid'), primary_key=True)
     sampleid =          Column(Integer)    
@@ -127,6 +146,36 @@ class Sample(Base):
 
 
 class ProcessType(Base):
+    """Table mapping the Process Types
+
+    :arg INTEGER typeid: The Process Type ID. Primary Key
+    :arg STRING displayname: The name of the process type as shown everywhere.
+    :arg STRING typename: The name of the _category_ of the process type.
+    :arg BOOLEAN isenabled: Probably related to the tickbox in the Operations interface
+    :arg STRING contextcode: The short code (usually 3 letters) that represents the type
+    :arg BOOLEAN isvisible: *unknown*
+    :arg INTEGER style: *unknown* 
+    :arg BOOLEANshowinexplorer: *unknown* 
+    :arg BOOLEAN showinbuttonbar *unknown*
+    :arg BOOLEAN openpostprocess: *unknown* 
+    :arg STRING iconconstant: *unknown*
+    :arg STRING outputcontextcode: *unknown*. Apparently, a two-letter code.
+    :arg BOOLEAN useprotocol: *unknown* 
+    :arg INTEGER ownerid: Researcher ID of the owner of the type. Should correlate to the Researcher table.
+    :arg INTEGER datastoreid: likely related to the udf storage 
+    :arg BOOLEAN isglobal: *unknown* 
+    :arg TIMESTAMP createddate: creation date
+    :arg TIMESTAMP lastmodifieddate: timestamp of the last modification 
+    :arg INTEGER lastmodifiedby: ID of the last modifier 
+    :arg STRING behaviourname: *unknown*
+    :arg STRING pmetadata: html string likely containing display data. The actual column name is metadata, but that causes namespace conflicts.
+    :arg BOOLEAN canedit: is that type editable
+    :arg STRING  modulename: Java module tied to this type 
+    :arg STRING  expertname: Java class tied to this type
+
+
+
+    """
     __tablename__ = 'processtype'
     typeid =            Column(Integer, primary_key=True)
     displayname =       Column(String)
