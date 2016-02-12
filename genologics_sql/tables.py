@@ -56,7 +56,7 @@ class EntityUdfView(Base):
         return "<EntityUdf(id={}, class={}, key={}, value={})>".format(self.attachtoid, self.attachtoclassid, self.udfname, self.udfvalue)
 
 class Project(Base):
-    """Table stroting project objects
+    """Table storing project objects
 
     :arg INTEGER projectid: the _internal_ project ID. **Primary key.** 
     :arg STRING name: the project name. 
@@ -156,7 +156,7 @@ class ProcessType(Base):
     :arg BOOLEAN isvisible: *unknown*
     :arg INTEGER style: *unknown* 
     :arg BOOLEANshowinexplorer: *unknown* 
-    :arg BOOLEAN showinbuttonbar *unknown*
+    :arg BOOLEAN showinbuttonbar: *unknown*
     :arg BOOLEAN openpostprocess: *unknown* 
     :arg STRING iconconstant: *unknown*
     :arg STRING outputcontextcode: *unknown*. Apparently, a two-letter code.
@@ -170,10 +170,8 @@ class ProcessType(Base):
     :arg STRING behaviourname: *unknown*
     :arg STRING pmetadata: html string likely containing display data. The actual column name is metadata, but that causes namespace conflicts.
     :arg BOOLEAN canedit: is that type editable
-    :arg STRING  modulename: Java module tied to this type 
-    :arg STRING  expertname: Java class tied to this type
-
-
+    :arg STRING modulename: Java module tied to this type 
+    :arg STRING expertname: Java class tied to this type
 
     """
     __tablename__ = 'processtype'
@@ -206,6 +204,38 @@ class ProcessType(Base):
         return "<ProcessType(id={}, name={})>".format(self.typeid, self.typename)
 
 class Process(Base):
+    """Table mapping process objects
+
+    :arg INTEGER processid: the (short) process ID. **Primary key.** 
+    :arg TIMESTAMP daterun: date where the process was closed 
+    :arg STRING luid: the (long) process id
+    :arg BOOLEAN isprotocol: *unknown*
+    :arg STRING protocolnameused: *unknown* 
+    :arg BOOLEAN programstarted: probably stores EPP status
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg INTEGER ownerid: researcher id of the process creator
+    :arg TIMESTAMP createddate: date of creation of the process
+    :arg TIMESTAMP lastmodifieddate: date of last modification
+    :arg INTEGER lastmodifiedby: researcher id of the last modifier
+    :arg INTEGER installationid: *unknown*
+    :arg INTEGER techid: *unknown*
+    :arg INTEGER typeid: id of the process type associated
+    :arg INTEGER stringparameterid: parameterid from processparameter. Contains information about EPPs.
+    :arg INTEGER fileparameterid: *unknown* often empty
+    :arg INTEGER protocolstepid: id of the associated protocol step
+    :arg STRING workstatus: status of the process. values :  COMPLETE, RECORD_DETAILS, STARTED, UNDER_REVIEW, MOVE_SAMPLES_ON
+    :arg INTEGER reagentcategoryid: id of the assocated reagent category
+    :arg INTEGER signedbyid: *unknown*
+    :arg TIMESTAMP signeddate: *unknown*
+    :arg BOOLEAN nextstepslocked: *unknown*
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg ProcessType type: ProcessType row associated with the Process row.
+    :arg ProcessUdfView udfs: ProcessUdfView row associated with the Process row.
+
+    """
     __tablename__ = 'process'
     processid =         Column(Integer, primary_key=True)
     daterun =           Column(TIMESTAMP)    
@@ -239,6 +269,39 @@ class Process(Base):
 
 
 class Artifact(Base):
+    """Table mapping process objects
+
+    :arg INTEGER artifactid: the (short) artifact ID. **Primary key.** 
+    :arg STRING name: the artifact given name
+    :arg STRING luid: the (long) process id
+    :arg FLOAT concentration: *unknown*
+    :arg FLOAT origvolume: *unknown*
+    :arg FLOAT origconcentration: *unknown*
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isworking: API working flag
+    :arg BOOLEAN isoriginal: *unknown*
+    :arg BOOLEAN isglobal: *unknown*
+    :arg BOOLEAN isgenealogyartifact: *unknown*
+    :arg INTEGER ownerid: researcher id of the artifact creator
+    :arg TIMESTAMP createddate: date of creation of the artifact
+    :arg TIMESTAMP lastmodifieddate: date of last modification
+    :arg INTEGER lastmodifiedby: researcher id of the last modifier
+    :arg INTEGER artifacttypeid: *unknown*
+    :arg INTEGER processoutputid: *unknown*
+    :arg INTEGER currentstateid: *unknown*
+    :arg INTEGER originalstateid: *unknown*
+    :arg INTEGER compoundartifactid: *unknown*
+    :arg INTEGER outputindex: *unknown*
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg Sample samples: Sample rows associated with the Artifact row.
+    :arg Artifact ancestors: Artifact rows associated with this row through artifact_ancestor_map.
+    :arg ArtifactUdfView udfs: ArtifactUdfView row associated the Artifact row.
+    :arg ContainerPlacement containerplacement: ContainerPlacement row associated the Artifact row.
+    :arg ReagentLabel reagentlabels: reagentlabel rows associated with the Artifact row.
+
+    """
     __tablename__ = 'artifact'
     artifactid =        Column(Integer, primary_key=True)
     name =              Column(String)
@@ -249,19 +312,19 @@ class Artifact(Base):
     origconcentration = Column(Float)
     datastoreid =       Column(Integer)
     isworking =         Column(Boolean)
-    isoriginal =        Column(String)
-    isglobal =          Column(String)
-    isgenealogyartifact=Column(String)
-    ownerid =           Column(String)
-    createddate =       Column(String)
-    lastmodifieddate =  Column(String)
-    lastmodifiedby =    Column(String)
-    artifacttypeid =    Column(String)
-    processoutputtypeid=Column(String)
-    currentstateid =    Column(String)
-    originalstateid =   Column(String)
-    compoundartifactid= Column(String)
-    outputindex =       Column(String)
+    isoriginal =        Column(Boolean)
+    isglobal =          Column(Boolean)
+    isgenealogyartifact=Column(Boolean)
+    ownerid =           Column(Integer)
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby =    Column(Integer)
+    artifacttypeid =    Column(Integer)
+    processoutputtypeid=Column(Integer)
+    currentstateid =    Column(Integer)
+    originalstateid =   Column(Integer)
+    compoundartifactid= Column(Integer)
+    outputindex =       Column(Integer)
 
     samples = relationship("Sample", secondary = artifact_sample_map, backref="artifacts")
     ancestors = relationship("Artifact", secondary = artifact_ancestor_map, 
@@ -273,6 +336,17 @@ class Artifact(Base):
         return "<Artifact(id={}, name={})>".format(self.artifactid, self.name)
 
 class ArtifactUdfView(Base):
+    """
+    View mapping udfs with artifacts through the datastores.
+
+    :arg INTEGER artifactid: the (short) artifact id
+    :arg STRING udtname: name of the user defined type
+    :arg STRING udfname: name of the user defined field
+    :arg STRING udftype: type of the user defined field
+    :arg STRING udfvalue: value of the user defined field
+    :arg STRING udfunitlabel: unit of the user defined field
+
+    """
     __tablename__ = 'artifact_udf_view'
     artifactid =        Column(Integer, ForeignKey('artifact.artifactid') , primary_key=True)     
     udtname =           Column(String, primary_key=True)
@@ -284,6 +358,18 @@ class ArtifactUdfView(Base):
         return "<ArtifactUdf(id={}, key={}, value={})>".format(self.artifactid, self.udfname, self.udfvalue)
 
 class ProcessUdfView(Base):
+    """
+    View mapping udfs with processes through the datastores.
+
+    :arg INTEGER processid: the (short) process id
+    :arg INTEGER typeid: the process type id
+    :arg STRING udtname: name of the user defined type
+    :arg STRING udfname: name of the user defined field
+    :arg STRING udftype: type of the user defined field
+    :arg STRING udfvalue: value of the user defined field
+    :arg STRING udfunitlabel: unit of the user defined field
+
+    """
     __tablename__ = 'process_udf_view'
     processid =         Column(Integer, ForeignKey('process.processid') , primary_key=True)     
     typeid =            Column(Integer, ForeignKey('processtype.typeid'), primary_key=True)
@@ -297,6 +383,28 @@ class ProcessUdfView(Base):
 
 
 class ContainerPlacement(Base):
+    """
+    Table mapping sample placement in the containers
+
+    :arg INTEGER placementid:internal placement ID. Primary key.
+    :arg INTEGER containerid: the associated container id
+    :arg INTEGER wellxposition: the horizontal position in the container of the sample
+    :arg INTEGER wellyposition: the vertical position in the container of the sample
+    :arg TIMESTAMP dateplaced: timestamp of the placement creation
+    :arg INTEGER ownerid: researcherid of the user who made the placement
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unkown*
+    :arg TIMESTAMP createddate: timestamp of the placement creation
+    :arg TIMESTAMP lastmodifieddate: timestamp of the last modification
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+    :arg INTEGER reagentid: Reagent ID used in that placement
+    :arg INTEGER processartifactid: artifact id of the artifact involved in that placement
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg Container container: Container row associated with the ContainerPlacement row.
+
+    """
     __tablename__ = 'containerplacement'
     placementid =       Column(Integer, primary_key=True)     
     containerid =       Column(Integer, ForeignKey('container.containerid'), primary_key=True)
@@ -319,6 +427,29 @@ class ContainerPlacement(Base):
 
 
 class Container(Base):
+    """Table mapping containers
+
+    :arg INTEGER containerid: The (short) container id. Primary Key.
+    :arg STRING subtype: The container type
+    :arg STRING luid: The (long) container id
+    :arg BOOLEAN isvisible: *unkown*
+    :arg STRING name: The container name
+    :arg INTEGER ownerid: Researcher ID of the container creator
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: The date of creation
+    :arg TIMESTAMP lastmodifieddate: The date of last modification
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+    :arg INTEGER stateid: placeholders for empty, populated, depleted, discarded
+    :arg INTEGER typeid: container type id from containertype (not mapped)
+    :arg STRING lotnumber: *unknown*
+    :arg TIMESTAMP expirydate: *unknown*
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg EntityUdfView udfs: EntityUdfView row associated with the Container row.
+
+    """
     __tablename__ = 'container'
     containerid =       Column(Integer, primary_key=True)     
     subtype =           Column(String)     
@@ -343,6 +474,22 @@ class Container(Base):
         return "<Container(id={}, name={})>".format(self.containerid, self.name)
 
 class ReagentLabel(Base):
+    """Table mapping reagent labels
+
+    :arg INTEGER labelid: The reagent label id. Primary Key.
+    :arg STRING name: The reagent label name
+    :arg INTEGER ownerid: Researcher ID of the reagent label creator
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: The date of creation
+    :arg TIMESTAMP lastmodifieddate: The date of last modification
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg Artifact artifacts: list of artifacts linked through the artifact_label junction table.
+
+    """
     __tablename__ = 'reagentlabel'
     labelid=            Column(Integer, primary_key=True)     
     name =              Column(String)     
@@ -362,6 +509,19 @@ class ReagentLabel(Base):
 
 
 class Analyte(Base):
+    """ Table mapping Analytes
+
+    :arg INTEGER artifactid: artifact id of the analyte. Primary key
+    :arg INTEGER analyteid: internal analyte id
+    :arg BOOLEAN iscalibrant: *unknown*
+    :arg INTEGER sequencenumber: *unknown*
+    :arg BOOLEAN isvisible: *unknown*
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg Artifact artifact: artifact row corresponding to the analyte row.
+
+    """
     __tablename__ = 'analyte'
     artifactid =        Column(Integer, ForeignKey('artifact.artifactid'), primary_key=True)     
     analyteid =         Column(Integer)
@@ -375,6 +535,22 @@ class Analyte(Base):
         return "<Analyte(id={})>".format(self.artifactid)
 
 class ResultFile(Base):
+    """ Table mapping ResultFiles
+
+    :arg INTEGER artifactid: artifact id of the ResultFile. Primary key
+    :arg INTEGER fileid: internal file id
+    :arg STRING typeid: *unknown*
+    :arg INTEGER parsestatus: *unknown*
+    :arg INTEGER status: *unknown*
+    :arg INTEGER commandid: *unknown*
+    :arg BOOLEAN glsfileid: id of the corresponding row in glsfile
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg Artifact artifact: artifact row corresponding to the ResultFile row.
+    :arg GlsFile glsfile: glsfile row corresponding to the ResultFile row.
+
+    """
     __tablename__ = 'resultfile'
     artifactid =        Column(Integer, ForeignKey('artifact.artifactid'), primary_key=True)     
     fileid =            Column(Integer)
@@ -390,13 +566,44 @@ class ResultFile(Base):
         return "<ResultFile(id={})>".format(self.artifactid)
 
 class GlsFile(Base):
+    """ Table mapping  Glsfiles
+
+    :arg INTEGER fileid: internal file id of corresponding ResultFile. Primary key.
+    :arg STRING server: ftp location
+    :arg STRING contenturi: URI to the file
+    :arg STRING luid: long file id
+    :arg STRING originallocation: original path of the file on the uploader's computer.
+    :arg BOOLEAN ispublished: *unknown* 
+    :arg INTEGER ownerid: Researcher ID of the file creator
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: The date of creation
+    :arg TIMESTAMP lastmodifieddate: The date of last modification
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+    :arg INTEGER attachtoid: *unknown*
+    :arg INTEGER attachtoclassid: *unknown*
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg Artifact artifact: artifact row corresponding to the ResultFile row.
+    :arg GlsFile glsfile: glsfile row corresponding to the ResultFile row.
+
+    """
     __tablename__ = 'glsfile'
     fileid =            Column(Integer, ForeignKey('resultfile.glsfileid'), primary_key=True)
     server =            Column(String)
     contenturi =        Column(String)
     luid =              Column(String)
     originallocation =  Column(String)
-    type =              Column(String)
+    ispublished =       Column(Boolean)
+    ownerid =           Column(Integer)     
+    datastoreid =       Column(Integer)     
+    isglobal =          Column(Boolean)     
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby =    Column(Integer)
+    attachtoid =        Column(Integer)
+    attachtoclassid =   Column(Integer)
 
     file=relationship("ResultFile",uselist=False, backref="glsfile")
     
