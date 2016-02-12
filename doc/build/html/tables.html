@@ -105,6 +105,179 @@
 <h1>Tables<a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h1>
 <p>This is the main module. It maps the different tables in the Genologics Postgres Database into SQLAlchemy&#8217;s objects, allowing them to be queries in python fashion.</p>
 <span class="target" id="module-genologics_sql.tables"></span><dl class="class">
+<dt id="genologics_sql.tables.Analyte">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">Analyte</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#Analyte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.Analyte" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping Analytes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>artifactid</strong> (<em>INTEGER</em>) &#8211; artifact id of the analyte. Primary key</li>
+<li><strong>analyteid</strong> (<em>INTEGER</em>) &#8211; internal analyte id</li>
+<li><strong>iscalibrant</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>sequencenumber</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>isvisible</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>artifact</strong> (<a class="reference internal" href="#genologics_sql.tables.Artifact" title="genologics_sql.tables.Artifact"><em>Artifact</em></a>) &#8211; artifact row corresponding to the analyte row.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.Artifact">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">Artifact</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#Artifact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.Artifact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping process objects</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>artifactid</strong> (<em>INTEGER</em>) &#8211; the (short) artifact ID. <strong>Primary key.</strong></li>
+<li><strong>name</strong> (<em>STRING</em>) &#8211; the artifact given name</li>
+<li><strong>luid</strong> (<em>STRING</em>) &#8211; the (long) process id</li>
+<li><strong>concentration</strong> (<em>FLOAT</em>) &#8211; <em>unknown</em></li>
+<li><strong>origvolume</strong> (<em>FLOAT</em>) &#8211; <em>unknown</em></li>
+<li><strong>origconcentration</strong> (<em>FLOAT</em>) &#8211; <em>unknown</em></li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; id of the associated datastore</li>
+<li><strong>isworking</strong> (<em>BOOLEAN</em>) &#8211; API working flag</li>
+<li><strong>isoriginal</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>isglobal</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>isgenealogyartifact</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; researcher id of the artifact creator</li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; date of creation of the artifact</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; date of last modification</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; researcher id of the last modifier</li>
+<li><strong>artifacttypeid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>processoutputid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>currentstateid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>originalstateid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>compoundartifactid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>outputindex</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>samples</strong> (<a class="reference internal" href="#genologics_sql.tables.Sample" title="genologics_sql.tables.Sample"><em>Sample</em></a>) &#8211; Sample rows associated with the Artifact row.</li>
+<li><strong>ancestors</strong> (<a class="reference internal" href="#genologics_sql.tables.Artifact" title="genologics_sql.tables.Artifact"><em>Artifact</em></a>) &#8211; Artifact rows associated with this row through artifact_ancestor_map.</li>
+<li><strong>udfs</strong> (<a class="reference internal" href="#genologics_sql.tables.ArtifactUdfView" title="genologics_sql.tables.ArtifactUdfView"><em>ArtifactUdfView</em></a>) &#8211; ArtifactUdfView row associated the Artifact row.</li>
+<li><strong>containerplacement</strong> (<a class="reference internal" href="#genologics_sql.tables.ContainerPlacement" title="genologics_sql.tables.ContainerPlacement"><em>ContainerPlacement</em></a>) &#8211; ContainerPlacement row associated the Artifact row.</li>
+<li><strong>reagentlabels</strong> (<a class="reference internal" href="#genologics_sql.tables.ReagentLabel" title="genologics_sql.tables.ReagentLabel"><em>ReagentLabel</em></a>) &#8211; reagentlabel rows associated with the Artifact row.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.ArtifactUdfView">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">ArtifactUdfView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#ArtifactUdfView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.ArtifactUdfView" title="Permalink to this definition">¶</a></dt>
+<dd><p>View mapping udfs with artifacts through the datastores.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>artifactid</strong> (<em>INTEGER</em>) &#8211; the (short) artifact id</li>
+<li><strong>udtname</strong> (<em>STRING</em>) &#8211; name of the user defined type</li>
+<li><strong>udfname</strong> (<em>STRING</em>) &#8211; name of the user defined field</li>
+<li><strong>udftype</strong> (<em>STRING</em>) &#8211; type of the user defined field</li>
+<li><strong>udfvalue</strong> (<em>STRING</em>) &#8211; value of the user defined field</li>
+<li><strong>udfunitlabel</strong> (<em>STRING</em>) &#8211; unit of the user defined field</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.Container">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">Container</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#Container"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.Container" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping containers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>containerid</strong> (<em>INTEGER</em>) &#8211; The (short) container id. Primary Key.</li>
+<li><strong>subtype</strong> (<em>STRING</em>) &#8211; The container type</li>
+<li><strong>luid</strong> (<em>STRING</em>) &#8211; The (long) container id</li>
+<li><strong>isvisible</strong> (<em>BOOLEAN</em>) &#8211; <em>unkown</em></li>
+<li><strong>name</strong> (<em>STRING</em>) &#8211; The container name</li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; Researcher ID of the container creator</li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; id of the associated datastore</li>
+<li><strong>isglobal</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of creation</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of last modification</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; researcherid of the last modifier</li>
+<li><strong>stateid</strong> (<em>INTEGER</em>) &#8211; placeholders for empty, populated, depleted, discarded</li>
+<li><strong>typeid</strong> (<em>INTEGER</em>) &#8211; container type id from containertype (not mapped)</li>
+<li><strong>lotnumber</strong> (<em>STRING</em>) &#8211; <em>unknown</em></li>
+<li><strong>expirydate</strong> (<em>TIMESTAMP</em>) &#8211; <em>unknown</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>udfs</strong> (<a class="reference internal" href="#genologics_sql.tables.EntityUdfView" title="genologics_sql.tables.EntityUdfView"><em>EntityUdfView</em></a>) &#8211; EntityUdfView row associated with the Container row.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.ContainerPlacement">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">ContainerPlacement</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#ContainerPlacement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.ContainerPlacement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping sample placement in the containers</p>
+<p>:arg INTEGER placementid:internal placement ID. Primary key.
+:arg INTEGER containerid: the associated container id
+:arg INTEGER wellxposition: the horizontal position in the container of the sample
+:arg INTEGER wellyposition: the vertical position in the container of the sample
+:arg TIMESTAMP dateplaced: timestamp of the placement creation
+:arg INTEGER ownerid: researcherid of the user who made the placement
+:arg INTEGER datastoreid: id of the associated datastore
+:arg BOOLEAN isglobal: <em>unkown</em>
+:arg TIMESTAMP createddate: timestamp of the placement creation
+:arg TIMESTAMP lastmodifieddate: timestamp of the last modification
+:arg INTEGER lastmodifiedby: researcherid of the last modifier
+:arg INTEGER reagentid: Reagent ID used in that placement
+:arg INTEGER processartifactid: artifact id of the artifact involved in that placement</p>
+<p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>container</strong> (<a class="reference internal" href="#genologics_sql.tables.Container" title="genologics_sql.tables.Container"><em>Container</em></a>) &#8211; Container row associated with the ContainerPlacement row.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
 <dt id="genologics_sql.tables.EntityUdfView">
 <em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">EntityUdfView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#EntityUdfView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.EntityUdfView" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table used to access project and container udfs</p>
@@ -129,9 +302,167 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="genologics_sql.tables.GlsFile">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">GlsFile</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#GlsFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.GlsFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping  Glsfiles</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fileid</strong> (<em>INTEGER</em>) &#8211; internal file id of corresponding ResultFile. Primary key.</li>
+<li><strong>server</strong> (<em>STRING</em>) &#8211; ftp location</li>
+<li><strong>contenturi</strong> (<em>STRING</em>) &#8211; URI to the file</li>
+<li><strong>luid</strong> (<em>STRING</em>) &#8211; long file id</li>
+<li><strong>originallocation</strong> (<em>STRING</em>) &#8211; original path of the file on the uploader&#8217;s computer.</li>
+<li><strong>ispublished</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; Researcher ID of the file creator</li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; id of the associated datastore</li>
+<li><strong>isglobal</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of creation</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of last modification</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; researcherid of the last modifier</li>
+<li><strong>attachtoid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>attachtoclassid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>artifact</strong> (<a class="reference internal" href="#genologics_sql.tables.Artifact" title="genologics_sql.tables.Artifact"><em>Artifact</em></a>) &#8211; artifact row corresponding to the ResultFile row.</li>
+<li><strong>glsfile</strong> (<a class="reference internal" href="#genologics_sql.tables.GlsFile" title="genologics_sql.tables.GlsFile"><em>GlsFile</em></a>) &#8211; glsfile row corresponding to the ResultFile row.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.Process">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">Process</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#Process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.Process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping process objects</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>processid</strong> (<em>INTEGER</em>) &#8211; the (short) process ID. <strong>Primary key.</strong></li>
+<li><strong>daterun</strong> (<em>TIMESTAMP</em>) &#8211; date where the process was closed</li>
+<li><strong>luid</strong> (<em>STRING</em>) &#8211; the (long) process id</li>
+<li><strong>isprotocol</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>protocolnameused</strong> (<em>STRING</em>) &#8211; <em>unknown</em></li>
+<li><strong>programstarted</strong> (<em>BOOLEAN</em>) &#8211; probably stores EPP status</li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; id of the associated datastore</li>
+<li><strong>isglobal</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; researcher id of the process creator</li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; date of creation of the process</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; date of last modification</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; researcher id of the last modifier</li>
+<li><strong>installationid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>techid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>typeid</strong> (<em>INTEGER</em>) &#8211; id of the process type associated</li>
+<li><strong>stringparameterid</strong> (<em>INTEGER</em>) &#8211; parameterid from processparameter. Contains information about EPPs.</li>
+<li><strong>fileparameterid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em> often empty</li>
+<li><strong>protocolstepid</strong> (<em>INTEGER</em>) &#8211; id of the associated protocol step</li>
+<li><strong>workstatus</strong> (<em>STRING</em>) &#8211; status of the process. values :  COMPLETE, RECORD_DETAILS, STARTED, UNDER_REVIEW, MOVE_SAMPLES_ON</li>
+<li><strong>reagentcategoryid</strong> (<em>INTEGER</em>) &#8211; id of the assocated reagent category</li>
+<li><strong>signedbyid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>signeddate</strong> (<em>TIMESTAMP</em>) &#8211; <em>unknown</em></li>
+<li><strong>nextstepslocked</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>type</strong> (<a class="reference internal" href="#genologics_sql.tables.ProcessType" title="genologics_sql.tables.ProcessType"><em>ProcessType</em></a>) &#8211; ProcessType row associated with the Process row.</li>
+<li><strong>udfs</strong> (<a class="reference internal" href="#genologics_sql.tables.ProcessUdfView" title="genologics_sql.tables.ProcessUdfView"><em>ProcessUdfView</em></a>) &#8211; ProcessUdfView row associated with the Process row.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.ProcessType">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">ProcessType</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#ProcessType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.ProcessType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping the Process Types</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>typeid</strong> (<em>INTEGER</em>) &#8211; The Process Type ID. Primary Key</li>
+<li><strong>displayname</strong> (<em>STRING</em>) &#8211; The name of the process type as shown everywhere.</li>
+<li><strong>typename</strong> (<em>STRING</em>) &#8211; The name of the _category_ of the process type.</li>
+<li><strong>isenabled</strong> (<em>BOOLEAN</em>) &#8211; Probably related to the tickbox in the Operations interface</li>
+<li><strong>contextcode</strong> (<em>STRING</em>) &#8211; The short code (usually 3 letters) that represents the type</li>
+<li><strong>isvisible</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>style</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>BOOLEANshowinexplorer</strong> &#8211; <em>unknown</em></li>
+<li><strong>showinbuttonbar</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>openpostprocess</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>iconconstant</strong> (<em>STRING</em>) &#8211; <em>unknown</em></li>
+<li><strong>outputcontextcode</strong> (<em>STRING</em>) &#8211; <em>unknown</em>. Apparently, a two-letter code.</li>
+<li><strong>useprotocol</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; Researcher ID of the owner of the type. Should correlate to the Researcher table.</li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; likely related to the udf storage</li>
+<li><strong>isglobal</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; creation date</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; timestamp of the last modification</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; ID of the last modifier</li>
+<li><strong>behaviourname</strong> (<em>STRING</em>) &#8211; <em>unknown</em></li>
+<li><strong>pmetadata</strong> (<em>STRING</em>) &#8211; html string likely containing display data. The actual column name is metadata, but that causes namespace conflicts.</li>
+<li><strong>canedit</strong> (<em>BOOLEAN</em>) &#8211; is that type editable</li>
+<li><strong>modulename</strong> (<em>STRING</em>) &#8211; Java module tied to this type</li>
+<li><strong>expertname</strong> (<em>STRING</em>) &#8211; Java class tied to this type</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.ProcessUdfView">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">ProcessUdfView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#ProcessUdfView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.ProcessUdfView" title="Permalink to this definition">¶</a></dt>
+<dd><p>View mapping udfs with processes through the datastores.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>processid</strong> (<em>INTEGER</em>) &#8211; the (short) process id</li>
+<li><strong>typeid</strong> (<em>INTEGER</em>) &#8211; the process type id</li>
+<li><strong>udtname</strong> (<em>STRING</em>) &#8211; name of the user defined type</li>
+<li><strong>udfname</strong> (<em>STRING</em>) &#8211; name of the user defined field</li>
+<li><strong>udftype</strong> (<em>STRING</em>) &#8211; type of the user defined field</li>
+<li><strong>udfvalue</strong> (<em>STRING</em>) &#8211; value of the user defined field</li>
+<li><strong>udfunitlabel</strong> (<em>STRING</em>) &#8211; unit of the user defined field</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
 <dt id="genologics_sql.tables.Project">
 <em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">Project</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#Project"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.Project" title="Permalink to this definition">¶</a></dt>
-<dd><p>Table stroting project objects</p>
+<dd><p>Table storing project objects</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -167,6 +498,110 @@
 <li><strong>researcher</strong> (<em>RESEARCHER</em>) &#8211; direct researcher mapping</li>
 </ul>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.ReagentLabel">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">ReagentLabel</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#ReagentLabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.ReagentLabel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping reagent labels</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>labelid</strong> (<em>INTEGER</em>) &#8211; The reagent label id. Primary Key.</li>
+<li><strong>name</strong> (<em>STRING</em>) &#8211; The reagent label name</li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; Researcher ID of the reagent label creator</li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; id of the associated datastore</li>
+<li><strong>isglobal</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of creation</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of last modification</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; researcherid of the last modifier</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>artifacts</strong> (<a class="reference internal" href="#genologics_sql.tables.Artifact" title="genologics_sql.tables.Artifact"><em>Artifact</em></a>) &#8211; list of artifacts linked through the artifact_label junction table.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.ResultFile">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">ResultFile</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#ResultFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.ResultFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping ResultFiles</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>artifactid</strong> (<em>INTEGER</em>) &#8211; artifact id of the ResultFile. Primary key</li>
+<li><strong>fileid</strong> (<em>INTEGER</em>) &#8211; internal file id</li>
+<li><strong>typeid</strong> (<em>STRING</em>) &#8211; <em>unknown</em></li>
+<li><strong>parsestatus</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>status</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>commandid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>glsfileid</strong> (<em>BOOLEAN</em>) &#8211; id of the corresponding row in glsfile</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>artifact</strong> (<a class="reference internal" href="#genologics_sql.tables.Artifact" title="genologics_sql.tables.Artifact"><em>Artifact</em></a>) &#8211; artifact row corresponding to the ResultFile row.</li>
+<li><strong>glsfile</strong> (<a class="reference internal" href="#genologics_sql.tables.GlsFile" title="genologics_sql.tables.GlsFile"><em>GlsFile</em></a>) &#8211; glsfile row corresponding to the ResultFile row.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.Sample">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">Sample</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#Sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.Sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping the samples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>processid</strong> (<em>INTEGER</em>) &#8211; The ID of the process that spawned the sample. Primary key.</li>
+<li><strong>sampleid</strong> (<em>INTEGER</em>) &#8211; Internal sample ID.</li>
+<li><strong>name</strong> (<em>STRING</em>) &#8211; the sample name.</li>
+<li><strong>datereceived</strong> (<em>TIMESTAMP</em>) &#8211; timestamp of the sample import.</li>
+<li><strong>datecompleted</strong> (<em>TIMESTAMP</em>) &#8211; timestamp of the project closure / sample completion.</li>
+<li><strong>maximumanalyteid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em></li>
+<li><strong>uniqueid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em>. Not unique.</li>
+<li><strong>bisourceid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em>.</li>
+<li><strong>projectid</strong> (<em>INTEGER</em>) &#8211; projet ID associated to the sample.</li>
+<li><strong>controltypeid</strong> (<em>INTEGER</em>) &#8211; <em>unknown</em>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project</strong> (<a class="reference internal" href="#genologics_sql.tables.Project" title="genologics_sql.tables.Project"><em>Project</em></a>) &#8211; project object associated to the sample through the projectid foreign key.</td>
 </tr>
 </tbody>
 </table>
