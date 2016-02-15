@@ -253,19 +253,29 @@
 <dt id="genologics_sql.tables.ContainerPlacement">
 <em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">ContainerPlacement</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#ContainerPlacement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.ContainerPlacement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table mapping sample placement in the containers</p>
-<p>:arg INTEGER placementid:internal placement ID. Primary key.
-:arg INTEGER containerid: the associated container id
-:arg INTEGER wellxposition: the horizontal position in the container of the sample
-:arg INTEGER wellyposition: the vertical position in the container of the sample
-:arg TIMESTAMP dateplaced: timestamp of the placement creation
-:arg INTEGER ownerid: researcherid of the user who made the placement
-:arg INTEGER datastoreid: id of the associated datastore
-:arg BOOLEAN isglobal: <em>unkown</em>
-:arg TIMESTAMP createddate: timestamp of the placement creation
-:arg TIMESTAMP lastmodifieddate: timestamp of the last modification
-:arg INTEGER lastmodifiedby: researcherid of the last modifier
-:arg INTEGER reagentid: Reagent ID used in that placement
-:arg INTEGER processartifactid: artifact id of the artifact involved in that placement</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>placementid</strong> (<em>INTEGER</em>) &#8211; internal placement ID. Primary key.</li>
+<li><strong>containerid</strong> (<em>INTEGER</em>) &#8211; the associated container id</li>
+<li><strong>wellxposition</strong> (<em>INTEGER</em>) &#8211; the horizontal position in the container of the sample</li>
+<li><strong>wellyposition</strong> (<em>INTEGER</em>) &#8211; the vertical position in the container of the sample</li>
+<li><strong>dateplaced</strong> (<em>TIMESTAMP</em>) &#8211; timestamp of the placement creation</li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; researcherid of the user who made the placement</li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; id of the associated datastore</li>
+<li><strong>isglobal</strong> (<em>BOOLEAN</em>) &#8211; <em>unkown</em></li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; timestamp of the placement creation</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; timestamp of the last modification</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; researcherid of the last modifier</li>
+<li><strong>reagentid</strong> (<em>INTEGER</em>) &#8211; Reagent ID used in that placement</li>
+<li><strong>processartifactid</strong> (<em>INTEGER</em>) &#8211; artifact id of the artifact involved in that placement</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <p>The following attributes are <em>not</em> found in the table, but are available through mapping</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -299,6 +309,61 @@
 </tbody>
 </table>
 <p>All of these are mapped as primary keys.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.EscalatedSample">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">EscalatedSample</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#EscalatedSample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.EscalatedSample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping the escalated samples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>escalatedsampleid</strong> (<em>INTEGER</em>) &#8211; the escalated sample internal id. Primary key.</li>
+<li><strong>escalationeventid</strong> (<em>INTEGER</em>) &#8211; the associated escalation event id</li>
+<li><strong>artifactid</strong> (<em>INTEGER</em>) &#8211; the associated artifact id.</li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; Researcher ID of the container creator</li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; id of the associated datastore</li>
+<li><strong>isglobal</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of creation</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of last modification</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; researcherid of the last modifier</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.EscalationEvent">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">EscalationEvent</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#EscalationEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.EscalationEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping Escalation events</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>eventid</strong> (<em>INTEGER</em>) &#8211; escalation event internal id. Primary Key.</li>
+<li><strong>processid</strong> (<em>INTEGER</em>) &#8211; process ID where the escalation took place</li>
+<li><strong>originarorid</strong> (<em>INTEGER</em>) &#8211; researcher id of the user requesting a review</li>
+<li><strong>reviewerid</strong> (<em>INTEGER</em>) &#8211; researcher id of the user having to perform the review</li>
+<li><strong>escalationdate</strong> (<em>TIMESTAMP</em>) &#8211; timestamp of the review request</li>
+<li><strong>reviewdate</strong> (<em>TIMESTAMP</em>) &#8211; timestamp of the review completion</li>
+<li><strong>escalationcomment</strong> (<em>STRING</em>) &#8211; comment of the review request</li>
+<li><strong>reviewcomment</strong> (<em>STRING</em>) &#8211; comment of the review completion</li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; id of the associated datastore</li>
+<li><strong>isglobal</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; Researcher ID of the container creator</li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of creation</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of last modification</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; researcherid of the last modifier</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
@@ -531,6 +596,48 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>artifacts</strong> (<a class="reference internal" href="#genologics_sql.tables.Artifact" title="genologics_sql.tables.Artifact"><em>Artifact</em></a>) &#8211; list of artifacts linked through the artifact_label junction table.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="genologics_sql.tables.Researcher">
+<em class="property">class </em><code class="descclassname">genologics_sql.tables.</code><code class="descname">Researcher</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genologics_sql/tables.html#Researcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genologics_sql.tables.Researcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table mapping Researchers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>researcherid</strong> (<em>INTEGER</em>) &#8211; internal researcher id. Primary key.</li>
+<li><strong>roleid</strong> (<em>INTEGER</em>) &#8211; internal role id</li>
+<li><strong>firstname</strong> (<em>STRING</em>) &#8211; First name of the researcher</li>
+<li><strong>lastname</strong> (<em>STRING</em>) &#8211; Last name of the researcher</li>
+<li><strong>title</strong> (<em>STRING</em>) &#8211; researcher&#8217;s title, if any</li>
+<li><strong>initials</strong> (<em>STRING</em>) &#8211; researcher&#8217;s initials</li>
+<li><strong>ownerid</strong> (<em>INTEGER</em>) &#8211; id of the row creator</li>
+<li><strong>datastoreid</strong> (<em>INTEGER</em>) &#8211; id of the associated datastore</li>
+<li><strong>isglobal</strong> (<em>BOOLEAN</em>) &#8211; <em>unknown</em></li>
+<li><strong>createddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of creation</li>
+<li><strong>lastmodifieddate</strong> (<em>TIMESTAMP</em>) &#8211; The date of last modification</li>
+<li><strong>lastmodifiedby</strong> (<em>INTEGER</em>) &#8211; researcherid of the last modifier</li>
+<li><strong>phone</strong> (<em>STRING</em>) &#8211; researcher&#8217;s phone number</li>
+<li><strong>email</strong> (<em>STRING</em>) &#8211; researcher&#8217;s email address</li>
+<li><strong>fax</strong> (<em>STRING</em>) &#8211; researcher&#8217;s fax number</li>
+<li><strong>addressid</strong> (<em>INTEGER</em>) &#8211; id of the associated Address row. (Not mapped)</li>
+<li><strong>labid</strong> (<em>INTEGER</em>) &#8211; id of the associated Lab row. (Not mapped)</li>
+<li><strong>supervisorid</strong> (<em>INTEGER</em>) &#8211; researcher id of the researcher&#8217;s supervisor</li>
+<li><strong>isapproved</strong> (<em>BOOLEAN</em>) &#8211; has been validated as a user</li>
+<li><strong>requestedsupervisorfirstname</strong> (<em>STRING</em>) &#8211; <em>unknown</em></li>
+<li><strong>requestedsupervsodlastname</strong> (<em>STRING</em>) &#8211; <em>unknown</em></li>
+<li><strong>requestedusername</strong> (<em>STRING</em>) &#8211; <em>unknown</em></li>
+<li><strong>requestedpassword</strong> (<em>STRING</em>) &#8211; <em>unknown</em></li>
+<li><strong>requestedlabname</strong> (<em>STRING</em>) &#8211; <em>unknown</em></li>
+<li><strong>avatar</strong> (<em>LARGEBINARY</em>) &#8211; base64 encoding of the avatar image</li>
+<li><strong>avatarcontenttype</strong> (<em>STRING</em>) &#8211; mime type of the avatar image</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

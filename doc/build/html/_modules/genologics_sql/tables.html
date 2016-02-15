@@ -489,7 +489,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Table mapping sample placement in the containers</span>
 
-<span class="sd">    :arg INTEGER placementid:internal placement ID. Primary key.</span>
+<span class="sd">    :arg INTEGER placementid: internal placement ID. Primary key.</span>
 <span class="sd">    :arg INTEGER containerid: the associated container id</span>
 <span class="sd">    :arg INTEGER wellxposition: the horizontal position in the container of the sample</span>
 <span class="sd">    :arg INTEGER wellyposition: the vertical position in the container of the sample</span>
@@ -713,7 +713,37 @@
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;&lt;GlsFile(id={})&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileid</span><span class="p">)</span>
 </div>
-<span class="k">class</span> <span class="nc">Researcher</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+<div class="viewcode-block" id="Researcher"><a class="viewcode-back" href="../../tables.html#genologics_sql.tables.Researcher">[docs]</a><span class="k">class</span> <span class="nc">Researcher</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Table mapping Researchers</span>
+
+<span class="sd">    :arg INTEGER researcherid: internal researcher id. Primary key.</span>
+<span class="sd">    :arg INTEGER roleid: internal role id </span>
+<span class="sd">    :arg STRING firstname: First name of the researcher</span>
+<span class="sd">    :arg STRING lastname: Last name of the researcher</span>
+<span class="sd">    :arg STRING title: researcher&#39;s title, if any</span>
+<span class="sd">    :arg STRING initials: researcher&#39;s initials</span>
+<span class="sd">    :arg INTEGER ownerid: id of the row creator</span>
+<span class="sd">    :arg INTEGER datastoreid: id of the associated datastore</span>
+<span class="sd">    :arg BOOLEAN isglobal: *unknown*</span>
+<span class="sd">    :arg TIMESTAMP createddate: The date of creation</span>
+<span class="sd">    :arg TIMESTAMP lastmodifieddate: The date of last modification</span>
+<span class="sd">    :arg INTEGER lastmodifiedby: researcherid of the last modifier</span>
+<span class="sd">    :arg STRING phone: researcher&#39;s phone number</span>
+<span class="sd">    :arg STRING email: researcher&#39;s email address</span>
+<span class="sd">    :arg STRING fax: researcher&#39;s fax number</span>
+<span class="sd">    :arg INTEGER addressid: id of the associated Address row. (Not mapped)</span>
+<span class="sd">    :arg INTEGER labid: id of the associated Lab row. (Not mapped)</span>
+<span class="sd">    :arg INTEGER supervisorid: researcher id of the researcher&#39;s supervisor</span>
+<span class="sd">    :arg BOOLEAN isapproved: has been validated as a user</span>
+<span class="sd">    :arg STRING requestedsupervisorfirstname: *unknown* </span>
+<span class="sd">    :arg STRING requestedsupervsodlastname: *unknown*</span>
+<span class="sd">    :arg STRING requestedusername: *unknown*</span>
+<span class="sd">    :arg STRING requestedpassword: *unknown*</span>
+<span class="sd">    :arg STRING requestedlabname: *unknown*</span>
+<span class="sd">    :arg LARGEBINARY avatar: base64 encoding of the avatar image</span>
+<span class="sd">    :arg STRING avatarcontenttype: mime type of the avatar image</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;researcher&#39;</span>
     <span class="n">researcherid</span> <span class="o">=</span>      <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">roleid</span> <span class="o">=</span>            <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">)</span>
@@ -744,8 +774,26 @@
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;&lt;Researcher(id={}, name={} {}, initials={})&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">researcherid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">firstname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lastname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initials</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="EscalationEvent"><a class="viewcode-back" href="../../tables.html#genologics_sql.tables.EscalationEvent">[docs]</a><span class="k">class</span> <span class="nc">EscalationEvent</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Table mapping Escalation events</span>
+<span class="sd">    </span>
+<span class="sd">    :arg INTEGER eventid: escalation event internal id. Primary Key.</span>
+<span class="sd">    :arg INTEGER processid: process ID where the escalation took place</span>
+<span class="sd">    :arg INTEGER originarorid: researcher id of the user requesting a review</span>
+<span class="sd">    :arg INTEGER reviewerid: researcher id of the user having to perform the review</span>
+<span class="sd">    :arg TIMESTAMP escalationdate: timestamp of the review request</span>
+<span class="sd">    :arg TIMESTAMP reviewdate: timestamp of the review completion</span>
+<span class="sd">    :arg STRING escalationcomment: comment of the review request</span>
+<span class="sd">    :arg STRING reviewcomment: comment of the review completion</span>
+<span class="sd">    :arg INTEGER datastoreid: id of the associated datastore</span>
+<span class="sd">    :arg BOOLEAN isglobal: *unknown*</span>
+<span class="sd">    :arg INTEGER ownerid: Researcher ID of the container creator</span>
+<span class="sd">    :arg TIMESTAMP createddate: The date of creation</span>
+<span class="sd">    :arg TIMESTAMP lastmodifieddate: The date of last modification</span>
+<span class="sd">    :arg INTEGER lastmodifiedby: researcherid of the last modifier</span>
 
-<span class="k">class</span> <span class="nc">EscalationEvent</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;escalationevent&#39;</span>
     <span class="n">eventid</span> <span class="o">=</span>           <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">processid</span> <span class="o">=</span>         <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;process.processid&#39;</span><span class="p">))</span>
@@ -766,8 +814,21 @@
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;&lt;EscalationEvent(id={}, process={})&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eventid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">processid</span><span class="p">)</span>
 
+</div>
+<div class="viewcode-block" id="EscalatedSample"><a class="viewcode-back" href="../../tables.html#genologics_sql.tables.EscalatedSample">[docs]</a><span class="k">class</span> <span class="nc">EscalatedSample</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Table mapping the escalated samples</span>
 
-<span class="k">class</span> <span class="nc">EscalatedSample</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+<span class="sd">    :arg INTEGER escalatedsampleid: the escalated sample internal id. Primary key.</span>
+<span class="sd">    :arg INTEGER escalationeventid: the associated escalation event id</span>
+<span class="sd">    :arg INTEGER artifactid: the associated artifact id.</span>
+<span class="sd">    :arg INTEGER ownerid: Researcher ID of the container creator</span>
+<span class="sd">    :arg INTEGER datastoreid: id of the associated datastore</span>
+<span class="sd">    :arg BOOLEAN isglobal: *unknown*</span>
+<span class="sd">    :arg TIMESTAMP createddate: The date of creation</span>
+<span class="sd">    :arg TIMESTAMP lastmodifieddate: The date of last modification</span>
+<span class="sd">    :arg INTEGER lastmodifiedby: researcherid of the last modifier</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;escalatedsample&#39;</span>
     <span class="n">escalatedsampleid</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">escalationeventid</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;escalationevent.eventid&#39;</span><span class="p">))</span>
@@ -783,7 +844,7 @@
     
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;EscalatedSample(id={}, artifact={})&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">escalatedsampleid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">artifactid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;EscalatedSample(id={}, artifact={})&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">escalatedsampleid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">artifactid</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

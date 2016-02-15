@@ -386,7 +386,7 @@ class ContainerPlacement(Base):
     """
     Table mapping sample placement in the containers
 
-    :arg INTEGER placementid:internal placement ID. Primary key.
+    :arg INTEGER placementid: internal placement ID. Primary key.
     :arg INTEGER containerid: the associated container id
     :arg INTEGER wellxposition: the horizontal position in the container of the sample
     :arg INTEGER wellyposition: the vertical position in the container of the sample
@@ -611,6 +611,36 @@ class GlsFile(Base):
         return "<GlsFile(id={})>".format(self.fileid)
 
 class Researcher(Base):
+    """ Table mapping Researchers
+
+    :arg INTEGER researcherid: internal researcher id. Primary key.
+    :arg INTEGER roleid: internal role id 
+    :arg STRING firstname: First name of the researcher
+    :arg STRING lastname: Last name of the researcher
+    :arg STRING title: researcher's title, if any
+    :arg STRING initials: researcher's initials
+    :arg INTEGER ownerid: id of the row creator
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: The date of creation
+    :arg TIMESTAMP lastmodifieddate: The date of last modification
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+    :arg STRING phone: researcher's phone number
+    :arg STRING email: researcher's email address
+    :arg STRING fax: researcher's fax number
+    :arg INTEGER addressid: id of the associated Address row. (Not mapped)
+    :arg INTEGER labid: id of the associated Lab row. (Not mapped)
+    :arg INTEGER supervisorid: researcher id of the researcher's supervisor
+    :arg BOOLEAN isapproved: has been validated as a user
+    :arg STRING requestedsupervisorfirstname: *unknown* 
+    :arg STRING requestedsupervsodlastname: *unknown*
+    :arg STRING requestedusername: *unknown*
+    :arg STRING requestedpassword: *unknown*
+    :arg STRING requestedlabname: *unknown*
+    :arg LARGEBINARY avatar: base64 encoding of the avatar image
+    :arg STRING avatarcontenttype: mime type of the avatar image
+
+    """
     __tablename__ = 'researcher'
     researcherid =      Column(Integer, primary_key=True)
     roleid =            Column(Integer)
@@ -643,6 +673,24 @@ class Researcher(Base):
         return "<Researcher(id={}, name={} {}, initials={})>".format(self.researcherid, self.firstname, self.lastname, self.initials)
 
 class EscalationEvent(Base):
+    """ Table mapping Escalation events
+    
+    :arg INTEGER eventid: escalation event internal id. Primary Key.
+    :arg INTEGER processid: process ID where the escalation took place
+    :arg INTEGER originarorid: researcher id of the user requesting a review
+    :arg INTEGER reviewerid: researcher id of the user having to perform the review
+    :arg TIMESTAMP escalationdate: timestamp of the review request
+    :arg TIMESTAMP reviewdate: timestamp of the review completion
+    :arg STRING escalationcomment: comment of the review request
+    :arg STRING reviewcomment: comment of the review completion
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg INTEGER ownerid: Researcher ID of the container creator
+    :arg TIMESTAMP createddate: The date of creation
+    :arg TIMESTAMP lastmodifieddate: The date of last modification
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+
+    """
     __tablename__ = 'escalationevent'
     eventid =           Column(Integer, primary_key=True)
     processid =         Column(Integer, ForeignKey('process.processid'))
@@ -665,6 +713,19 @@ class EscalationEvent(Base):
 
 
 class EscalatedSample(Base):
+    """ Table mapping the escalated samples
+
+    :arg INTEGER escalatedsampleid: the escalated sample internal id. Primary key.
+    :arg INTEGER escalationeventid: the associated escalation event id
+    :arg INTEGER artifactid: the associated artifact id.
+    :arg INTEGER ownerid: Researcher ID of the container creator
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: The date of creation
+    :arg TIMESTAMP lastmodifieddate: The date of last modification
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+
+    """
     __tablename__ = 'escalatedsample'
     escalatedsampleid = Column(Integer, primary_key=True)
     escalationeventid = Column(Integer, ForeignKey('escalationevent.eventid'))
