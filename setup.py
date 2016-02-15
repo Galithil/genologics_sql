@@ -8,7 +8,7 @@ import glob
 version_py = os.path.join(os.path.dirname(__file__), 'version.py')
 
 try:
-    version_git = subprocess.Popen(["git", "describe"],stdout=subprocess.PIPE).communicate()[0].rstrip()
+    version_git = subprocess.Popen(["git", "describe", "--abbrev=0"],stdout=subprocess.PIPE).communicate()[0].rstrip()
 except:
     with open(version_py, 'r') as fh:
         version_git = open(version_py).read().strip().split('=')[-1].replace('"','')
@@ -34,7 +34,7 @@ setup(name='genologics_sql',
 	"Intended Audience :: Developers",
 	"Intended Audience :: Healthcare Industry",
 	"Intended Audience :: Science/Research",
-	"License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "License :: OSI Approved :: MIT License)",
 	"Operating System :: POSIX :: Linux",
 	"Programming Language :: Python",
 	"Topic :: Scientific/Engineering :: Medical Science Apps."
