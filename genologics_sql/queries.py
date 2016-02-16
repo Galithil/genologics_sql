@@ -127,27 +127,21 @@ def get_last_modified_projectids(session, interval="2 hours"):
     projectids=set()
     for project in get_last_modified_projects(session, interval):
         projectids.add(project.luid)
-    print projectids
 
     for project in get_last_modified_project_udfs(session, interval):
         projectids.add(project.luid)
-    print projectids
 
     for project in get_last_modified_project_sample_udfs(session, interval):
         projectids.add(project.luid)
-    print projectids
 
     for project in get_last_modified_project_containers(session, interval):
         projectids.add(project.luid)
-    print projectids
 
     for project in get_last_modified_project_processes(session, interval):
         projectids.add(project.luid)
-    print projectids
 
     for project in get_last_modified_project_process_udfs(session, interval):
         projectids.add(project.luid)
-    print projectids
 
     return projectids
 
