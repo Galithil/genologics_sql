@@ -12,7 +12,7 @@ def get_last_modified_projects(session, interval="2 hours"):
     :returns: List of Project records
 
     """
-    txt="age(lastmodifieddate)< '{int}'::interval".format(int=interval)
+    txt="age(now(),lastmodifieddate)< '{int}'::interval".format(int=interval)
     return session.query(Project).filter(text(txt)).all()
 
 def get_last_modified_project_udfs(session, interval="2 hours"):
@@ -25,7 +25,7 @@ def get_last_modified_project_udfs(session, interval="2 hours"):
     """
     query="select pj.* from project pj \
            inner join entityudfstorage eus on pj.projectid = eus.attachtoid \
-           where eus.attachtoclassid = 83 and age(eus.lastmodifieddate) < '{int}'::interval;".format(int=interval)
+           where eus.attachtoclassid = 83 and age(now(), eus.lastmodifieddate) < '{int}'::interval;".format(int=interval)
     return session.query(Project).from_statement(text(query)).all()
 
 
@@ -39,7 +39,7 @@ def get_last_modified_project_sample_udfs(session, interval="2 hours"):
     query= "select distinct pj.* from project pj \
             inner join sample sa on sa.projectid=pj.projectid \
             inner  join processudfstorage pus on sa.processid=pus.processid \
-            where age(pus.lastmodifieddate) < '{int}'::interval;".format(int=interval)
+            where age(now(), pus.lastmodifieddate) < '{int}'::interval;".format(int=interval)
     return session.query(Project).from_statement(text(query)).all()
 
 def get_last_modified_project_artifacts(session, interval="2 hours"):
@@ -53,7 +53,7 @@ def get_last_modified_project_artifacts(session, interval="2 hours"):
             inner join sample sa on sa.projectid=pj.projectid \
             inner join artifact_sample_map asm on sa.processid=asm.processid \
             inner join artifact art on asm.artifactid=art.artifactid \
-            where age(art.lastmodifieddate) < '{int}'::interval;".format(int=interval)
+            where age(now(), art.lastmodifieddate) < '{int}'::interval;".format(int=interval)
     return session.query(Project).from_statement(text(query)).all()
 
 def get_last_modified_project_artifact_udfs(session, interval="2 hours"):
@@ -67,7 +67,7 @@ def get_last_modified_project_artifact_udfs(session, interval="2 hours"):
             inner join sample sa on sa.projectid=pj.projectid \
             inner join artifact_sample_map asm on sa.processid=asm.processid \
             inner join artifactudfstorage aus on asm.artifactid=aus.artifactid \
-            where age(aus.lastmodifieddate) < '{int}'::interval;".format(int=interval)
+            where age(now(), aus.lastmodifieddate) < '{int}'::interval;".format(int=interval)
     return session.query(Project).from_statement(text(query)).all()
 
 def get_last_modified_project_containers(session, interval="2 hours"):
@@ -97,7 +97,7 @@ def get_last_modified_project_processes(session, interval="2 hours"):
             inner join artifact_sample_map asm on sa.processid=asm.processid \
             inner join processiotracker pit on asm.artifactid=pit.inputartifactid \
             inner join process pro on pit.processid=pro.processid \
-            where age(pro.lastmodifieddate) < '{int}'::interval;".format(int=interval)
+            where age(now(), pro.lastmodifieddate) < '{int}'::interval;".format(int=interval)
     return session.query(Project).from_statement(text(query)).all()
 
 def get_last_modified_project_process_udfs(session, interval="2 hours"):
@@ -113,7 +113,7 @@ def get_last_modified_project_process_udfs(session, interval="2 hours"):
             inner join processiotracker pit on asm.artifactid=pit.inputartifactid \
             inner join process pro on pit.processid=pro.processid \
             inner join processudfstorage pus on pro.processid=pus.processid \
-            where age(pus.lastmodifieddate) < '{int}'::interval;".format(int=interval)
+            where age(now(), pus.lastmodifieddate) < '{int}'::interval;".format(int=interval)
     return session.query(Project).from_statement(text(query)).all()
 
 
