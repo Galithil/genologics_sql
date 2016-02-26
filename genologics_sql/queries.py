@@ -145,3 +145,23 @@ def get_last_modified_projectids(session, interval="2 hours"):
 
     return projectids
 
+
+def get_last_modified_processes(session, ptypes, interval="24 hours"):
+    """gets all the processes of the given <type> that have been modified
+    or have a udf modified in the last <interval>
+
+    :param session: the current SQLAlchemy session to the db
+    :param ptypes: the LIST of process type ids to be returned
+    :param interval: the postgres compliant interval of time to search processes in.
+
+    """
+    query= "select distinct pro.* from process pro \
+            inner join processudfstorage pus on pro.processid=pus.processid \
+            where (pro.typeid in ({typelist}) \
+            and age(now(), pus.lastmodifieddate) < '{int}'::interval) \
+            or \
+            (age(now(), pro.lastmodifieddate) < '{int}'::interval \
+            and pro.typeid in ({typelist}));".format(int=interval, typelist=",".join([str(x) for x in ptypes]))
+    return session.query(Process).from_statement(text(query)).all()
+
+
