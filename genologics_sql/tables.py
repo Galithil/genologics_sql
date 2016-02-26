@@ -1,6 +1,7 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 from sqlalchemy import Table, ForeignKey, Column, Boolean, Integer, Float, String, TIMESTAMP, LargeBinary
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship
 
 #Module used to map the tables from Genologics's Postgres instance
 
@@ -76,7 +77,7 @@ class Project(Base):
 
     The following attributes are *not* found in the table, but are available through mapping
 
-    :arg UDFS udfs: list of project udf rows for the given projectid
+    :arg UDFS udfs: list of project udf rows for the given projectid 
     :arg RESEARCHER researcher: direct researcher mapping
 
     """
@@ -98,6 +99,7 @@ class Project(Base):
     priority =          Column(Integer)
 
     #this is the reason why udfview was declared before project
+    #the entityid of the Projects is 83
     udfs = relationship("EntityUdfView", foreign_keys=projectid, remote_side=EntityUdfView.attachtoid, uselist=True,
             primaryjoin="and_(Project.projectid==EntityUdfView.attachtoid, EntityUdfView.attachtoclassid==83)")
 
@@ -269,11 +271,11 @@ class Process(Base):
 
 
 class Artifact(Base):
-    """Table mapping process objects
+    """Table mapping artifact objects
 
     :arg INTEGER artifactid: the (short) artifact ID. **Primary key.** 
     :arg STRING name: the artifact given name
-    :arg STRING luid: the (long) process id
+    :arg STRING luid: the (long) artifact id
     :arg FLOAT concentration: *unknown*
     :arg FLOAT origvolume: *unknown*
     :arg FLOAT origconcentration: *unknown*
@@ -295,11 +297,14 @@ class Artifact(Base):
 
     The following attributes are *not* found in the table, but are available through mapping
 
-    :arg Sample samples: Sample rows associated with the Artifact row.
     :arg Artifact ancestors: Artifact rows associated with this row through artifact_ancestor_map.
-    :arg ArtifactUdfView udfs: ArtifactUdfView row associated the Artifact row.
     :arg ContainerPlacement containerplacement: ContainerPlacement row associated the Artifact row.
+    :arg String qc_flag: API string of the latest qc_flag of the artifact.
     :arg ReagentLabel reagentlabels: reagentlabel rows associated with the Artifact row.
+    :arg Sample samples: Sample rows associated with the Artifact row.
+    :arg ArtifactState states: ArtifactState rows associated with the Artifact row.
+    :arg ArtifactUdfView udfs: ArtifactUdfView row associated the Artifact row.
+    :arg dict udf_dict: A dictionnary of udfs with correct types (Strings, Floats and Booleans).
 
     """
     __tablename__ = 'artifact'
@@ -331,7 +336,36 @@ class Artifact(Base):
                 primaryjoin=artifactid==artifact_ancestor_map.c.artifactid, 
                 secondaryjoin=artifactid==artifact_ancestor_map.c.ancestorartifactid)
     udfs = relationship("ArtifactUdfView")
+    states = relationship("ArtifactState", backref='artifact')
     containerplacement = relationship('ContainerPlacement', uselist=False, backref='artifact')
+
+    @hybrid_property
+    def udf_dict(self):
+        udf_dict={}
+        for udfrow in self.udfs:
+            if udfrow.udfvalue:
+                if udfrow.udftype == "Numeric":
+                    udf_dict[udfrow.udfname]=float(udfrow.udfvalue)
+                elif udfrow.udftype == "Boolean":
+                    udf_dict[udfrow.udfname]=(udfrow.udfvalue=="True")
+                else:
+                    udf_dict[udfrow.udfname]=udfrow.udfvalue
+                
+        return udf_dict
+
+    @hybrid_property
+    def qc_flag(self):
+        latest_state=sorted(self.states, key=lambda x:x.lastmodifieddate)[-1]
+        if latest_state.qcflag==0:
+            return 'UNKNOWN'
+        elif latest_state.qcflag==1:
+            return 'PASSED'
+        elif latest_state.qcflag==2:
+            return 'FAILED'
+        else:
+            return 'ERROR'
+
+
     def __repr__(self):
         return "<Artifact(id={}, name={})>".format(self.artifactid, self.name)
 
@@ -382,6 +416,7 @@ class ProcessUdfView(Base):
         return "<ProcessUdf(id={}, key={}, value={})>".format(self.processid, self.udfname, self.udfvalue)
 
 
+
 class ContainerPlacement(Base):
     """
     Table mapping sample placement in the containers
@@ -403,6 +438,7 @@ class ContainerPlacement(Base):
     The following attributes are *not* found in the table, but are available through mapping
 
     :arg Container container: Container row associated with the ContainerPlacement row.
+    :arg STRING api_string: string reporting the position in the same fashion as the API does.
 
     """
     __tablename__ = 'containerplacement'
@@ -421,6 +457,34 @@ class ContainerPlacement(Base):
     processartifactid = Column(Integer, ForeignKey('artifact.artifactid'))
 
     container=relationship('Container', uselist=False)
+
+    def get_x_position(self):
+        """Get the X position of the placement according to Container type"""
+        ctype=self.container.type
+        start=0
+        if ctype.isxalpha:
+            start=65
+        start+=ctype.xindexstartsat
+        value=start+self.wellxposition
+        if ctype.isxalpha:
+            return chr(value)
+        return value
+
+    def get_y_position(self):
+        """Get the Y position of the placement according to Container type"""
+        ctype=self.container.type
+        start=0
+        if ctype.isyalpha:
+            start=65
+        start+=ctype.yindexstartsat
+        value=start+self.wellyposition
+        if ctype.isyalpha:
+            return chr(value)
+        return value
+
+    @hybrid_property
+    def api_string(self):
+        return "{0}:{1}".format(self.get_y_position(), self.get_x_position())
 
     def __repr__(self):
         return "<ContainerPlacement(id={}, pos={}:{}, cont={}, art={})>".format(self.placementid, self.wellxposition, self.wellyposition, self.containerid, self.processartifactid)
@@ -448,6 +512,7 @@ class Container(Base):
     The following attributes are *not* found in the table, but are available through mapping
 
     :arg EntityUdfView udfs: EntityUdfView row associated with the Container row.
+    :arg ContainerType type: ContainerType row associated with the Container row.
 
     """
     __tablename__ = 'container'
@@ -463,15 +528,68 @@ class Container(Base):
     lastmodifieddate =  Column(TIMESTAMP)
     lastmodifiedby =    Column(Integer)
     stateid =           Column(Integer)     
-    typeid =            Column(Integer)     
+    typeid =            Column(Integer, ForeignKey('containertype.typeid'))     
     lotnumber =         Column(String)
     expirydate =        Column(TIMESTAMP)
 
+    #the entity id of Containers is 27
     udfs = relationship("EntityUdfView", foreign_keys=containerid, remote_side=EntityUdfView.attachtoid, uselist=True,
             primaryjoin="and_(Container.containerid==EntityUdfView.attachtoid, EntityUdfView.attachtoclassid==27)")
+    type=relationship("ContainerType", uselist=False)
 
     def __repr__(self):
         return "<Container(id={}, name={})>".format(self.containerid, self.name)
+
+class ContainerType(Base):
+    """Table mapping containertype
+
+    :arg INTEGER typeid: internal container type id
+    :arg STRING name: container type name
+    :arg INTEGER sequencenumber: *unknown*
+    :arg BOOLEAN isvisible: *unknown*
+    :arg INTEGER numxpositions: number of valid x positions in the container
+    :arg BOOLEAN isxalpha: true if the x axis is coded by letter
+    :arg INTEGER numypositions: number of valid y positions in the container
+    :arg BOOLEAN isyalpha: true if the x axis is coded by letter
+    :arg INTEGER xindexstartsat: first value of the x axis
+    :arg INTEGER yindexstartsat: first value of the y axis
+    :arg INTEGER iconsetconstant: *unknown*
+    :arg INTEGER ownerid: researcherid of the owner of the container type
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: date of creation of the type
+    :arg TIMESTAMP lastmodifieddate: date of last modification
+    :arg INTEGER lastmodifiedby: researcher id of the last modifier
+    :arg STRING subtype: *unknown*
+    :arg STRING vendoruniqueid: *unknown*
+    :arg BOOLEAN istube: true if the container is a tube
+
+    """
+    __tablename__ = 'containertype'
+    typeid =            Column(Integer, primary_key=True)
+    name =              Column(String)
+    sequencenumber =    Column(Integer)
+    isvisible =         Column(Boolean)
+    numxpositions =     Column(Integer)
+    isxalpha =          Column(Boolean)
+    numypositions =     Column(Integer)
+    isyalpha =          Column(Boolean)
+    xindexstartsat =    Column(Integer)
+    yindexstartsat =    Column(Integer)
+    iconsetconstant =   Column(Integer)
+    ownerid =           Column(Integer)
+    datastoreid =       Column(Integer)
+    isglobal =          Column(Boolean)
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby =    Column(Integer)
+    subtype =           Column(String)
+    vendoruniqueid =    Column(String)
+    istube =            Column(Boolean)
+
+    def __repr__(self):
+        return "<ContainerType(id={}, name={})>".format(self.typeid, self.name)
+
 
 class ReagentLabel(Base):
     """Table mapping reagent labels
@@ -742,3 +860,67 @@ class EscalatedSample(Base):
 
     def __repr__(self):
         return "<EscalatedSample(id={}, artifact={})>".format(self.escalatedsampleid, self.artifactid)
+
+class ProcessIOTracker(Base):
+    """Table mapping the input/outputs of processes
+
+    :arg INTEGER trackerid: internal tracker id. Primary key
+    :arg FLOAT inputvolume: *unknown*
+    :arg FLOAT inputconcentration: *unknown*
+    :arg INTEGER inputstatepreid: *unknown*
+    :arg INTEGER inputstatuspostid:*unknown*
+    :arg INTEGER ownerid: Researcher ID of the container creator
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: The date of creation
+    :arg TIMESTAMP lastmodifieddate: The date of last modification
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+    :arg INTEGER inputartifactid: id of the associated input artifact
+    :arg INTEGER processid: id of the associated process
+
+    The following attributes are *not* found in the table, but are available through mapping
+
+    :arg Artifact artifact: artifact row corresponding to the ResultFile row.
+    
+    """
+    __tablename__ = 'processiotracker'
+    trackerid =          Column(Integer, primary_key=True)
+    inputvolume =        Column(Float) 
+    inputconcentration = Column(Float)
+    inputstatepreid =    Column(Integer)
+    inputstatepostid =   Column(Integer)
+    ownerid =            Column(Integer)
+    datastoreid =        Column(Integer)
+    isglobal =           Column(Boolean)
+    createddate =        Column(TIMESTAMP)
+    lastmodifieddate =   Column(TIMESTAMP)
+    lastmodifiedby =     Column(Integer)
+    inputartifactid =    Column(Integer, ForeignKey('artifact.artifactid'))
+    processid =          Column(Integer, ForeignKey('process.processid'))
+
+
+class ArtifactState(Base):
+    """Table mapping artifac states and QC
+
+    :arg INTEGER stateid: the internal state id. Primary key.
+    :arg INTEGER qcflag: 0: UNKNOWN, 1: PASSED, 2: FAILED
+    :arg INTEGER ownerid: Researcher ID of the container creator
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: The date of creation
+    :arg TIMESTAMP lastmodifieddate: The date of last modification
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+    :arg INTEGER artifactid: id of the associated artifact
+
+    """
+    __tablename__ = 'artifactstate'
+    stateid =           Column(Integer, primary_key=True)
+    qcflag =            Column(Integer)
+    ownerid =           Column(Integer)
+    datastoreid =       Column(Integer)
+    isglobal =          Column(Boolean)
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby =    Column(Integer)
+    artifactid =        Column(Integer, ForeignKey('artifact.artifactid'))
+
