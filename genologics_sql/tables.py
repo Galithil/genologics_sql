@@ -898,6 +898,9 @@ class ProcessIOTracker(Base):
     inputartifactid =    Column(Integer, ForeignKey('artifact.artifactid'))
     processid =          Column(Integer, ForeignKey('process.processid'))
 
+    def __repr__(self):
+        return "<ProcessIOTracker(id={}, processid={}, inputartifactid={})>".format(self.trackerid, self.processid, self.inputartifactid)
+
 
 class ArtifactState(Base):
     """Table mapping artifac states and QC
@@ -923,4 +926,43 @@ class ArtifactState(Base):
     lastmodifieddate =  Column(TIMESTAMP)
     lastmodifiedby =    Column(Integer)
     artifactid =        Column(Integer, ForeignKey('artifact.artifactid'))
+
+    def __repr__(self):
+        return "<ArtifactState(id={}, artifactid={})>".format(self.stateid, self.artifactid)
+
+
+class OutputMapping(Base):
+    """Table mapping the process outputs 
+
+    :arg INTEGER mappingid: the internal mapping id
+    :arg FLOAT outputvolume: *unknown*
+    :arg FLOAT outputconcentration: *unknown*
+    :arg INTEGER ownerid: Researcher ID of the container creator
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: The date of creation
+    :arg TIMESTAMP lastmodifieddate: The date of last modification
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+    :arg INTEGER trackerid: trackerid of the associated processiotracker 
+    :arg INTEGER outputartifactid: artifactid of the associated artifact
+
+    """
+    __tablename__ = 'outputmapping'
+    mappingid =             Column(Integer, primary_key=True)
+    outputvolume =          Column(Float)
+    outputconcentration =   Column(Float)
+    ownerid =               Column(Integer)
+    datastoreid =           Column(Integer)
+    isglobal =              Column(Boolean)
+    createddate =           Column(TIMESTAMP)
+    lastmodifieddate =      Column(TIMESTAMP)
+    lastmodifiedby =        Column(Integer)
+    trackerid =             Column(Integer, ForeignKey('processiotracker.trackerid'))
+    outputartifactid =      Column(Integer, ForeignKey('artifact.artifactid')) 
+
+    tracker=relationship('ProcessIOTracker', backref='output')
+
+    def __repr__(self):
+        return "<OutputMapping(mappingid={}, trackerid={}, outputartifactid={})>".format(self.mappingid, self.trackerid, self.outputartifactid)
+
 
