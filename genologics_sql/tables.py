@@ -108,6 +108,30 @@ class Project(Base):
     def __repr__(self):
         return "<Project(id={}, name={})>".format(self.projectid, self.name)
 
+class SampleUdfView(Base):
+    """Table used to access project and container udfs
+
+    :arg INTEGER sampleid: the ID of the sample to attach the row to.
+    :arg STRING udtname: the name of the User Defined Type.
+    :arg STRING udfname: the name of the User Defined Field.
+    :arg STRING udttype: the type of the User Defined Type.
+    :arg STRING udfvalue: the value of the User Defined Field.
+    :arg STRING udfunitlabel: the type of the User Defined Field if preset.
+
+
+    All of these are mapped as primary keys.
+    """
+    __tablename__ = 'sample_udf_view'
+    sampleid =          Column(Integer, ForeignKey('sample.sampleid'), primary_key=True)     
+    udtname =           Column(String, primary_key=True)
+    udfname =           Column(String, primary_key=True) 
+    udftype =           Column(String, primary_key=True)
+    udfvalue =          Column(String, primary_key=True)
+    udfunitlabel =      Column(String, primary_key=True)
+
+
+    def __repr__(self):
+        return "<SampleUdf(id={}, key={}, value={})>".format(self.sampleid, self.udfname, self.udfvalue)
 
 class Sample(Base):
     """
@@ -142,6 +166,7 @@ class Sample(Base):
     controltypeid =     Column(Integer)
 
     project = relationship(Project, backref='samples')
+    udfs = relationship('SampleUdfView')
 
     def __repr__(self):
         return "<Sample(id={}, name={})>".format(self.sampleid, self.name)
