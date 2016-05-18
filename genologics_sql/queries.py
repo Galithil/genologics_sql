@@ -183,3 +183,23 @@ def get_processes_in_history(session, parent_process, ptypes):
             where pro2.processid={parent} and pro.typeid in ({typelist});".format(parent=parent_process, typelist=",".join([str(x) for x in ptypes]))
 
     return session.query(Process).from_statement(text(query)).all()
+
+def get_children_processes(session, parent_process, ptypes):
+    """returns wll the processes that are found in the children of parent_process 
+    AND are of type ptypes
+
+    :param session: the current SQLAlchemy session to the db
+    :param parent_process: the id of the parent_process
+    :param ptypes: the LIST of process type ids to be returned
+
+    """
+
+    query="select distinct pro.* from process pro \
+            inner join processiotracker pio on pio.processid=pro.processid \
+            inner join outputmapping om on om.trackerid=pio.trackerid \
+            inner join artifact_ancestor_map aam on om.outputartifactid=aam.artifactid\
+            inner join processiotracker pio2 on pio2.inputartifactid=aam.ancestorartifactid \
+            inner join process pro2 on pro2.processid=pio2.processid \
+            where pro2.processid={parent} and pro.typeid in ({typelist});".format(parent=parent_process, typelist=",".join([str(x) for x in ptypes]))
+
+    return session.query(Process).from_statement(text(query)).all()
