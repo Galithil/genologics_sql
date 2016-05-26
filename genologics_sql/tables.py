@@ -990,4 +990,43 @@ class OutputMapping(Base):
     def __repr__(self):
         return "<OutputMapping(mappingid={}, trackerid={}, outputartifactid={})>".format(self.mappingid, self.trackerid, self.outputartifactid)
 
+class Principals(Base):
+    """Table mapping user information
 
+    :arg INTEGER principalid: internal principal id, primary key
+    :arg STRING username: username associated with that row
+    :arg STRING password: hashed password 
+    :arg BOOLEAN isvisible: *unknown*
+    :arg BOOLEAN isloggedin: flag checking is the user is currently within the system
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg INTEGER ownerid: id of the creator of that row
+    :arg BOOLEAN isglobal:  *unknown*
+    :arg TIMESTAMP createddate: row creation date
+    :arg TIMESTAMP lastmodifieddate: row last modification date
+    :arg STRING ldapdn: *unknown*
+    :arg STRING ldapuuid: *unknown* 
+    :arg BOOLEAN accountlocked : *unknown* 
+    :arg INTEGER researcherid: id of the associated researcher row 
+    :arg BOOLEAN locked: *unknown*
+
+    """
+    __tablename__ = 'principals'
+    principalid =       Column(Integer, primary_key=True)
+    username =          Column(String)
+    password =          Column(String)
+    isvisible =         Column(Boolean)
+    isloggedin =        Column(Boolean)
+    datastoreid =       Column(Integer)
+    ownerid =           Column(Integer)
+    isglobal =          Column(Boolean)
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby =    Column(Integer)
+    ldapdn =            Column(String)
+    ldapuuid =          Column(String)
+    accountlocked =     Column(Boolean)
+    researcherid =      Column(Integer, ForeignKey('researcher.researcherid'))
+    locked =            Column(Boolean)
+
+    def __repr__(self):
+        return "<Principals(principalid={}, username={}, researcherid={})>".format(self.principalid, self.username, self.researcherid)
