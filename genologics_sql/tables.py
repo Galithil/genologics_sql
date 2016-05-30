@@ -105,6 +105,20 @@ class Project(Base):
 
     researcher = relationship("Researcher", uselist=False)
 
+    @hybrid_property
+    def udf_dict(self):
+        udf_dict={}
+        for udfrow in self.udfs:
+            if udfrow.udfvalue:
+                if udfrow.udftype == "Numeric":
+                    udf_dict[udfrow.udfname]=float(udfrow.udfvalue)
+                elif udfrow.udftype == "Boolean":
+                    udf_dict[udfrow.udfname]=(udfrow.udfvalue=="True")
+                else:
+                    udf_dict[udfrow.udfname]=udfrow.udfvalue
+                
+        return udf_dict
+
     def __repr__(self):
         return "<Project(id={}, name={})>".format(self.projectid, self.name)
 
@@ -167,6 +181,20 @@ class Sample(Base):
 
     project = relationship(Project, backref='samples')
     udfs = relationship('SampleUdfView')
+
+    @hybrid_property
+    def udf_dict(self):
+        udf_dict={}
+        for udfrow in self.udfs:
+            if udfrow.udfvalue:
+                if udfrow.udftype == "Numeric":
+                    udf_dict[udfrow.udfname]=float(udfrow.udfvalue)
+                elif udfrow.udftype == "Boolean":
+                    udf_dict[udfrow.udfname]=(udfrow.udfvalue=="True")
+                else:
+                    udf_dict[udfrow.udfname]=udfrow.udfvalue
+                
+        return udf_dict
 
     def __repr__(self):
         return "<Sample(id={}, name={})>".format(self.sampleid, self.name)
