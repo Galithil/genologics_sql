@@ -322,6 +322,19 @@ class Process(Base):
     def __repr__(self):
         return "<Process(id={}, type={})>".format(self.processid, self.typeid)
 
+    @hybrid_property
+    def udf_dict(self):
+        udf_dict={}
+        for udfrow in self.udfs:
+            if udfrow.udfvalue:
+                if udfrow.udftype == "Numeric":
+                    udf_dict[udfrow.udfname]=float(udfrow.udfvalue)
+                elif udfrow.udftype == "Boolean":
+                    udf_dict[udfrow.udfname]=(udfrow.udfvalue=="True")
+                else:
+                    udf_dict[udfrow.udfname]=udfrow.udfvalue
+                
+        return udf_dict
 
 class Artifact(Base):
     """Table mapping artifact objects
