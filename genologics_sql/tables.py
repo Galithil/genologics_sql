@@ -305,7 +305,7 @@ class Process(Base):
     lastmodifieddate =  Column(TIMESTAMP)    
     lastmodifiedby =    Column(Integer)
     installationid =    Column(Integer)
-    techid =            Column(Integer)
+    techid =            Column(Integer, ForeignKey('principals.principalid'))
     typeid =            Column(Integer, ForeignKey('processtype.typeid'))
     stringparameterid = Column(Integer)
     fileparameterid =   Column(Integer)
@@ -316,8 +316,9 @@ class Process(Base):
     signeddate =        Column(TIMESTAMP)
     nextstepslocked =   Column(Boolean)
 
-    type = relationship(ProcessType, backref='processes')
+    type = relationship("ProcessType", backref='processes')
     udfs = relationship("ProcessUdfView")
+    technician = relationship("Principals")
 
     def __repr__(self):
         return "<Process(id={}, type={})>".format(self.processid, self.typeid)
@@ -842,7 +843,7 @@ class Researcher(Base):
     email =             Column(String)
     fax =               Column(String)
     addressid =         Column(Integer)
-    labid =             Column(Integer) 
+    labid =             Column(Integer, ForeignKey('lab.labid')) 
     supervisorid =      Column(Integer) 
     isapproved =        Column(Boolean) 
     requestedsupervisorfirstname =  Column(String) 
@@ -852,6 +853,8 @@ class Researcher(Base):
     requestedlabname =  Column(String) 
     avatar =            Column(LargeBinary) 
     avatarcontenttype = Column(String) 
+
+    lab=relationship("Lab",uselist=False)
 
     def __repr__(self):
         return "<Researcher(id={}, name={} {}, initials={})>".format(self.researcherid, self.firstname, self.lastname, self.initials)
@@ -1044,6 +1047,7 @@ class Principals(Base):
     :arg BOOLEAN isglobal:  *unknown*
     :arg TIMESTAMP createddate: row creation date
     :arg TIMESTAMP lastmodifieddate: row last modification date
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
     :arg STRING ldapdn: *unknown*
     :arg STRING ldapuuid: *unknown* 
     :arg BOOLEAN accountlocked : *unknown* 
@@ -1069,5 +1073,93 @@ class Principals(Base):
     researcherid =      Column(Integer, ForeignKey('researcher.researcherid'))
     locked =            Column(Boolean)
 
+    researcher=relationship("Researcher")
+
     def __repr__(self):
         return "<Principals(principalid={}, username={}, researcherid={})>".format(self.principalid, self.username, self.researcherid)
+
+class Lab(Base):
+    """Table mapping Lab entities
+
+    :arg INTEGER labid: internal lab id. Primary key.
+    :arg STRING name: Lab name
+    :arg STRING website: URL to the lab's website
+    :arg INTEGER ownerid: id of the creator of that row
+    :arg INTEGER datastoreid: id of the associated datastore
+    :arg BOOLEAN isglobal:  *unknown*
+    :arg TIMESTAMP createddate: row creation date
+    :arg TIMESTAMP lastmodifieddate: row last modification date
+    :arg INTEGER lastmodifiedby: researcherid of the last modifier
+    :arg INTEGER billingadressid: ID of the associated billing address
+    :arg INTEGER shippingaddressid: ID of the associated shipping address
+    
+    """
+
+    __tablename__ = "lab"
+    labid =             Column(Integer, primary_key=True)
+    name =              Column(String)
+    website =           Column(String)
+    ownerid =           Column(Integer)
+    datastoreid =       Column(Integer)
+    isglobal =          Column(Boolean)
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP)
+    lastmodifiedby =    Column(Integer)
+    billingaddressid =  Column(Integer)
+    shippingaddressid = Column(Integer)
+
+
+    #the entity id of Lab is 17
+    udfs = relationship("EntityUdfView", foreign_keys=labid, remote_side=EntityUdfView.attachtoid, uselist=True,
+            primaryjoin="and_(Lab.labid==EntityUdfView.attachtoid, EntityUdfView.attachtoclassid==17)")
+
+    @hybrid_property
+    def udf_dict(self):
+        udf_dict={}
+        for udfrow in self.udfs:
+            if udfrow.udfvalue:
+                if udfrow.udftype == "Numeric":
+                    udf_dict[udfrow.udfname]=float(udfrow.udfvalue)
+                elif udfrow.udftype == "Boolean":
+                    udf_dict[udfrow.udfname]=(udfrow.udfvalue=="True")
+                else:
+                    udf_dict[udfrow.udfname]=udfrow.udfvalue
+                
+        return udf_dict
+
+    def __repr__(self):
+        return "<Lab(labid={}, name={})>".format(self.labid, self.name)
+
+class ReagentType(Base):
+    """Table mapping the reagenttype table
+
+    :arg INTEGER reagenttypeid: internal reagent type id
+    :arg STRING name: name of the reagent type
+    :arg STRING meta_data: *unknown*
+    :arg STRING specialtype: *unknown*
+    :arg INTEGER ownerid: principal ID of the owner
+    :arg INTEGER datastoreid: *unknown*
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: date of creation
+    :arg TIMESTAMP lastmodifieddate: date of last modification
+    :arg INTEGER lastmodifiedby: principal id of the last modifier
+    :arg BOOLEAN isvisible: *unknown*
+    :arg INTEGER reagentcategoryid: the associated reagentcategory id
+
+    """
+    __tablename__ = 'reagenttype'
+    reagenttypeid =     Column(Integer, primary_key=True)
+    name =              Column(String)
+    meta_data =         Column('metadata', String)
+    specialtype =       Column(String)
+    ownerid =           Column(Integer)
+    datastoreid =       Column(Integer)
+    isglobal =          Column(Boolean)
+    createddate =       Column(TIMESTAMP)
+    lastmodifieddate =  Column(TIMESTAMP) 
+    lastmodifiedby =    Column(Integer)
+    isvisible =         Column(Boolean)
+    reagentcategoryid = Column(Integer)
+
+    def __repr__(self):
+        return "<ReagentType(reagenttypeid={}, name={})>".format(self.reagenttypeid, self.name)
