@@ -164,27 +164,32 @@ def get_last_modified_processes(session, ptypes, interval="24 hours"):
             and pro.typeid in ({typelist}));".format(int=interval, typelist=",".join([str(x) for x in ptypes]))
     return session.query(Process).from_statement(text(query)).all()
 
-def get_processes_in_history(session, parent_process, ptypes):
+def get_processes_in_history(session, parent_process, ptypes, sample=None):
     """returns wll the processes that are found in the history of parent_process 
     AND are of type ptypes
 
     :param session: the current SQLAlchemy session to the db
     :param parent_process: the id of the parent_process
     :param ptypes: the LIST of process type ids to be returned
+    :param sample: if defined, filter artifacts that match the correct sample
 
     """
-
-    query="select distinct pro.* from process pro \
+    qar=["select distinct pro.* from process pro \
             inner join processiotracker pio on pio.processid=pro.processid \
             inner join outputmapping om on om.trackerid=pio.trackerid \
             inner join artifact_ancestor_map aam on pio.inputartifactid=aam.ancestorartifactid\
             inner join processiotracker pio2 on pio2.inputartifactid=aam.artifactid \
-            inner join process pro2 on pro2.processid=pio2.processid \
-            where pro2.processid={parent} and pro.typeid in ({typelist});".format(parent=parent_process, typelist=",".join([str(x) for x in ptypes]))
-
+            inner join process pro2 on pro2.processid=pio2.processid "]
+    if sample:
+        qar.append("inner join artifact_sample_map asm on asm.artifactid=pio.inputartifactid ")
+    qar.append("where pro2.processid={parent} and pro.typeid in ({typelist}) ")
+    if sample:
+        qar.append("and asm.processid = {sampleid}".format(sampleid=sample))
+    qar.append(";") 
+    query=''.join(qar).format(parent=parent_process, typelist=",".join([str(x) for x in ptypes]))
     return session.query(Process).from_statement(text(query)).all()
 
-def get_children_processes(session, parent_process, ptypes):
+def get_children_processes(session, parent_process, ptypes, sample=None):
     """returns wll the processes that are found in the children of parent_process 
     AND are of type ptypes
 
@@ -194,12 +199,23 @@ def get_children_processes(session, parent_process, ptypes):
 
     """
 
-    query="select distinct pro.* from process pro \
-            inner join processiotracker pio on pio.processid=pro.processid \
-            inner join outputmapping om on om.trackerid=pio.trackerid \
-            inner join artifact_ancestor_map aam on om.outputartifactid=aam.artifactid\
-            inner join processiotracker pio2 on pio2.inputartifactid=aam.ancestorartifactid \
-            inner join process pro2 on pro2.processid=pio2.processid \
-            where pro2.processid={parent} and pro.typeid in ({typelist});".format(parent=parent_process, typelist=",".join([str(x) for x in ptypes]))
+    qar1=[   """select pro.* from process pro 
+            inner join processiotracker piot on piot.processid=pro.processid 
+            inner join artifact_ancestor_map aam on aam.artifactid=piot.inputartifactid 
+            inner join outputmapping om on aam.ancestorartifactid=om.outputartifactid
+            inner join processiotracker piot2 on piot2.trackerid=om.trackerid """]
+    qar2=[  """select pro.* from process pro 
+            inner join processiotracker piot on piot.processid=pro.processid 
+            inner join outputmapping om on piot.inputartifactid=om.outputartifactid
+            inner join processiotracker piot2 on piot2.trackerid=om.trackerid """]
+    if sample:
+        qar1.append("inner join artifact_sample_map asm on asm.artifactid=piot.inputartifactid ")
+        qar2.append("inner join artifact_sample_map asm on asm.artifactid=piot.inputartifactid ")
+    qar1.append("where piot2.processid={parent} and pro.typeid in ({typelist}) ")
+    qar2.append("where piot2.processid={parent} and pro.typeid in ({typelist}) ")
+    if sample:
+        qar1.append("and asm.processid = {sampleid}".format(sampleid=sample))
+        qar2.append("and asm.processid = {sampleid}".format(sampleid=sample))
 
+    query="{} union {};".format(''.join(qar1), ''.join(qar2)).format(parent=parent_process, typelist=",".join([str(x) for x in ptypes]))
     return session.query(Process).from_statement(text(query)).all()
