@@ -189,7 +189,7 @@ def get_processes_in_history(session, parent_process, ptypes, sample=None):
     query=''.join(qar).format(parent=parent_process, typelist=",".join([str(x) for x in ptypes]))
     return session.query(Process).from_statement(text(query)).all()
 
-def get_children_processes(session, parent_process, ptypes, sample=None):
+def get_children_processes(session, parent_process, ptypes, sample=None, orderby=None):
     """returns wll the processes that are found in the children of parent_process 
     AND are of type ptypes
 
@@ -216,6 +216,8 @@ def get_children_processes(session, parent_process, ptypes, sample=None):
     if sample:
         qar1.append("and asm.processid = {sampleid}".format(sampleid=sample))
         qar2.append("and asm.processid = {sampleid}".format(sampleid=sample))
+    if orderby:
+        qar2.append("order by {}".format(orderby))
 
     query="{} union {};".format(''.join(qar1), ''.join(qar2)).format(parent=parent_process, typelist=",".join([str(x) for x in ptypes]))
     return session.query(Process).from_statement(text(query)).all()
