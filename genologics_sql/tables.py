@@ -1,4 +1,4 @@
-from sqlalchemy import Table, ForeignKey, Column, Boolean, Integer, Float, String, TIMESTAMP, LargeBinary
+from sqlalchemy import Table, ForeignKey, Column, Boolean, Integer, Float, String, TIMESTAMP, LargeBinary, sql
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -116,7 +116,7 @@ class Project(Base):
                     udf_dict[udfrow.udfname]=(udfrow.udfvalue=="True")
                 else:
                     udf_dict[udfrow.udfname]=udfrow.udfvalue
-                
+
         return udf_dict
 
     def __repr__(self):
@@ -181,6 +181,16 @@ class Sample(Base):
 
     project = relationship(Project, backref='samples')
     udfs = relationship('SampleUdfView')
+    submitter = relationship("Researcher",
+            secondary="join(Process, Principals, Process.techid==Principals.principalid)",
+            primaryjoin="Sample.processid==Process.processid",
+            secondaryjoin="Researcher.researcherid==Principals.researcherid",
+            uselist=False)
+    artifact = relationship('Artifact',
+            secondary=artifact_sample_map,
+            secondaryjoin="and_(artifact_sample_map.c.artifactid == Artifact.artifactid, Artifact.isoriginal==True)",
+            uselist=False
+            )
 
     @hybrid_property
     def udf_dict(self):
