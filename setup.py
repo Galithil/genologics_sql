@@ -25,8 +25,8 @@ except IOError:
 
 setup(name='genologics_sql',
       version=version_git,
-      description="Python interface to the GenoLogics LIMS (Laboratory Information Management System) server via its postgres database.",
-      long_description="""A basic module for interacting with the GenoLogics LIMS server via its postgres database.
+      description="Python interface to the Illumina Clarity LIMS (Laboratory Information Management System) (formerly Genologics) server via its postgres database.",
+      long_description="""A basic module for interacting with the Clarity LIMS server via its postgres database.
                           The goal is to provide simple access to the most common entities and their attributes in a reasonably Pythonic fashion.""",
       classifiers=[
 	"Development Status :: 4 - Beta",
@@ -39,7 +39,7 @@ setup(name='genologics_sql',
 	"Programming Language :: Python",
 	"Topic :: Scientific/Engineering :: Medical Science Apps."
 	],
-      keywords='genologics database postgres',
+      keywords='genologics database postgres clarity lims illumina',
       author='Denis Moreno',
       author_email='milui.galithil@gmail.com',
       maintainer='Denis Moreno',

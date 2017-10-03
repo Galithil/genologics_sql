@@ -372,6 +372,7 @@ class Artifact(Base):
     :arg ArtifactState states: ArtifactState rows associated with the Artifact row.
     :arg ArtifactUdfView udfs: ArtifactUdfView row associated the Artifact row.
     :arg dict udf_dict: A dictionnary of udfs with correct types (Strings, Floats and Booleans).
+    :arg list routes: a list of routing actions taken on the given artifact
 
     """
     __tablename__ = 'artifact'
@@ -405,6 +406,7 @@ class Artifact(Base):
     udfs = relationship("ArtifactUdfView")
     states = relationship("ArtifactState", backref='artifact')
     containerplacement = relationship('ContainerPlacement', uselist=False, backref='artifact')
+    routes = relationship("RoutingAction", backref='artifact')
 
     @hybrid_property
     def udf_dict(self):
@@ -1124,7 +1126,7 @@ class Lab(Base):
                     udf_dict[udfrow.udfname]=(udfrow.udfvalue=="True")
                 else:
                     udf_dict[udfrow.udfname]=udfrow.udfvalue
-                
+
         return udf_dict
 
     def __repr__(self):
@@ -1156,10 +1158,45 @@ class ReagentType(Base):
     datastoreid =       Column(Integer)
     isglobal =          Column(Boolean)
     createddate =       Column(TIMESTAMP)
-    lastmodifieddate =  Column(TIMESTAMP) 
+    lastmodifieddate =  Column(TIMESTAMP)
     lastmodifiedby =    Column(Integer)
     isvisible =         Column(Boolean)
     reagentcategoryid = Column(Integer)
 
     def __repr__(self):
         return "<ReagentType(reagenttypeid={}, name={})>".format(self.reagenttypeid, self.name)
+
+class RoutingAction(Base):
+    """Table mapping the routingaction table, which governs the routing of artifacts.
+
+    :arg INTEGER routingactionid: internal routing action id
+    :arg STRING actiontype: name of the action. valid names : COMPLETE, ADVANCE, ESCALATE, REWORK, REMOVE, REPEAT, NO_ACTION
+    :arg INTEGER actionstepid: stepid from ProtocolStep
+    :arg INTEGER processid: processid of the process that the artifact is routed to
+    :arg INTEGER artifactid: artifactid of the artifact being routed
+    :arg INTEGER reworkedprocessid: if action is REWORK, processid of the step samples are being reworked to
+    :arg INTEGER reworkedartifactid: if action is REWORK, artifactid of the artifact being reworked
+    :arg INTEGER ownerid: principal ID of the owner
+    :arg INTEGER datastoreid: *unknown*
+    :arg BOOLEAN isglobal: *unknown*
+    :arg TIMESTAMP createddate: date of creation
+    :arg TIMESTAMP lastmodifieddate: date of last modification
+    :arg INTEGER lastmodifiedby: principal id of the last modifier
+
+    """
+    __tablename__ = 'routingaction'
+    routingactionid =    Column(Integer, primary_key=True)
+    actiontype =         Column(String)
+    processid  =         Column(Integer)
+    artifactid =         Column(Integer, ForeignKey('artifact.artifactid'))
+    reworkedprocessid =  Column(Integer)
+    reworkedartifactid = Column(Integer)
+    ownerid =            Column(Integer)
+    datastoreid =        Column(Integer)
+    isglobal =           Column(Boolean)
+    createddate =        Column(TIMESTAMP)
+    lastmodifieddate =   Column(TIMESTAMP)
+    lastmodifiedby =     Column(Integer)
+
+    def __repr__(self):
+        return "<RoutingAction(routingactionid={}, actiontype={})>".format(self.routingactionid, self.actiontype)
